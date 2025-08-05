@@ -6,7 +6,6 @@ import {
   SimpleGrid,
   Text,
   VStack,
-  Icon,
   Spinner,
 } from "@chakra-ui/react";
 import { apps } from "@/constants/apps.js";
@@ -23,10 +22,13 @@ function AppLoader() {
 
   const [Component, setComponent] = React.useState(null);
 
-  // Every time appId changes, reset the component and load the new one 
-  // If the appId does not exist, redirect to home
+  // Every time appId changes resets the component and loads the new one
+  // If the appId is not found in apps list, shows an error message and navigates back to the home page
+  // TODO:
+  // If the appId is valid, but no module is found, show a message (under construction)
   React.useEffect(() => {
     setComponent(null);
+
     if (!modules[`./apps/${appId}/index.jsx`]) {
       navigate("/", { replace: true });
       return;
@@ -35,15 +37,32 @@ function AppLoader() {
     modules[`./apps/${appId}/index.jsx`]().then((mod) => {
       setComponent(() => mod.default);
     });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appId]);
+
+  // Get the name of the app from the apps array
+  const app = apps.find((app) => app.id === appId);
+
+  if (!app) {
+    return (
+      <Box textAlign="center" mt={20}>
+        <Text fontSize="xl" color="red.500">
+          App no encontrada: {appId}
+        </Text>
+        <Button mt={4} as={Link} to="/">
+          Volver al Puerto
+        </Button>
+      </Box>
+    );
+  }
 
   // If the component is not loaded yet, show a loading spinner
   if (!Component) {
     return (
       <Box textAlign="center" mt={20}>
         <Spinner size="xl" />
-        <Text mt={4}>Cargando {appId}...</Text>
+        <Text mt={4}>Cargando {app.name}...</Text>
       </Box>
     );
   }
@@ -51,8 +70,8 @@ function AppLoader() {
   // Render the component once it's loaded
   return (
     <Box>
-      <Button mb={4} colorScheme="teal" as={Link} to="/">
-        ← Volver al Puerto
+      <Button variant={'plain'} as={Link} to="/">
+        {"<< Volver al Puerto"}
       </Button>
       <Component />
     </Box>
@@ -81,7 +100,7 @@ export default function App() {
                 </Text>
               </VStack>
 
-              <SimpleGrid columns={{ base: 2, md: 4 }} spacing={6}>
+              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
                 {apps.map(({ id, name, color, icon }) => {
                   const IconComponent = icon;
                   return (
