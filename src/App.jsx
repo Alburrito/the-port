@@ -9,30 +9,7 @@ import {
   Icon,
   Spinner,
 } from "@chakra-ui/react";
-import { MdApps } from "react-icons/md";
-
-// TODO: export to file
-// TODO(future): description and preview img
-const apps = [
-  {
-    id: "roulette",
-    name: "Ruleta",
-    color: "orange",
-    icon: "logo-icon.svg"
-  },
-  {
-    id: "words-generator",
-    name: "Generador de Palabras",
-    color: "purple",
-    icon: "logo-icon.svg"
-  },
-  {
-    id: "text-to-color",
-    name: "Texto a Color",
-    color: "blue",
-    icon: "logo-icon.svg"
-  }
-];
+import { apps } from "@/constants/apps.js";
 
 function AppLoader() {
   const { appId } = useParams();
@@ -105,18 +82,20 @@ export default function App() {
               </VStack>
 
               <SimpleGrid columns={{ base: 2, md: 4 }} spacing={6}>
-                {apps.map(({ id, name }) => (
-                  <Button
-                    key={id}
-                    as={Link}
-                    to={`/app/${id}`}
-                    leftIcon={<Icon as={MdApps} />}
-                    size="lg"
-                    colorScheme="teal"
-                  >
-                    {name}
-                  </Button>
-                ))}
+                {apps.map(({ id, name, color, icon }) => {
+                  const IconComponent = icon;
+                  return (
+                    <Button
+                      key={id}
+                      as={Link}
+                      to={`/app/${id}`}
+                      size="lg"
+                      colorPalette={color}
+                    >
+                      <IconComponent /> {name}
+                    </Button>
+                  );
+                })}
               </SimpleGrid>
             </>
           }
