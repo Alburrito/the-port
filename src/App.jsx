@@ -36,11 +36,13 @@ function AppLoader() {
 
   // Render the component once it's loaded
   return (
-    <Box>
-      <BackToPortButton variant="plain" size="md" mb={4}>
+    <Box minH="100vh" maxH="100vh" display="flex" flexDirection="column">
+      <BackToPortButton variant="plain" size="md">
         {"<< Volver al Puerto"}
       </BackToPortButton>
-      <Component />
+      <Box flex="1">
+        <Component />
+      </Box>
     </Box>
   );
 }
