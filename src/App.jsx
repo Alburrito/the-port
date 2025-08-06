@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, useParams, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, useParams, Link } from "react-router-dom";
 import {
   Box,
   Button,
@@ -7,39 +7,15 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { loadAppConfigs, loadApp } from "@/utils/loadApps.js";
+import { loadAppConfigs } from "@/utils/loadApps.js";
 import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
 import { BackToPortButton } from "@/components/BackToPortButton.jsx";
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
+import { useAppLoader } from "@/hooks/useAppLoader.js";
 
 function AppLoader() {
   const { appId } = useParams();
-  const navigate = useNavigate();
-  const [Component, setComponent] = React.useState(null);
-  const [appConfig, setAppConfig] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-
-  React.useEffect(() => {
-    setComponent(null);
-    setAppConfig(null);
-    setLoading(true);
-    setError(null);
-
-    // Lazy loading the app configuration and component
-    loadApp(appId)
-      .then(({ config, component }) => {
-        setAppConfig(config);
-        setComponent(() => component);
-        setLoading(false);
-      })
-      .catch((err) => {
-        // App not found or error loading
-        setError(err.message || `App "${appId}" no encontrada`);
-        setLoading(false);
-      });
-
-  }, [appId, navigate]);
+  const { component: Component, config, loading, error } = useAppLoader(appId);
 
   if (loading) {
     return <LoadingSpinner message="Cargando app..." />;
@@ -54,7 +30,7 @@ function AppLoader() {
     }
   }
 
-  if (!appConfig) {
+  if (!config) {
     return <AppNotFound appId={appId} />;
   }
 
