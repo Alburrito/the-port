@@ -8,61 +8,63 @@ import {
   VStack,
   Spinner,
 } from "@chakra-ui/react";
-import { apps } from "@/constants/apps.js";
+import { loadAppConfigs, loadApp } from "@/utils/loadApps.js";
 
 function AppLoader() {
   const { appId } = useParams();
   const navigate = useNavigate();
-
-  // Dynamic loading of components based on appId
-  // Note: import paths must be static or use import.meta.glob (Vite)
-  // Here I use import.meta.glob for Vite
-
-  const modules = import.meta.glob("./apps/*/index.jsx");
-
   const [Component, setComponent] = React.useState(null);
+  const [appConfig, setAppConfig] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
-  // Every time appId changes resets the component and loads the new one
-  // If the appId is not found in apps list, shows an error message and navigates back to the home page
-  // TODO:
-  // If the appId is valid, but no module is found, show a message (under construction)
   React.useEffect(() => {
     setComponent(null);
+    setAppConfig(null);
+    setLoading(true);
+    setError(null);
 
-    if (!modules[`./apps/${appId}/index.jsx`]) {
-      navigate("/", { replace: true });
-      return;
-    }
+    // Lazy loading the app configuration and component
+    loadApp(appId)
+      .then(({ config, component }) => {
+        setAppConfig(config);
+        setComponent(() => component);
+        setLoading(false);
+      })
+      .catch((err) => {
+        // App not found or error loading
+        setError(err.message || `App "${appId}" no encontrada`);
+        setLoading(false);
+      });
 
-    modules[`./apps/${appId}/index.jsx`]().then((mod) => {
-      setComponent(() => mod.default);
-    });
+  }, [appId, navigate]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appId]);
-
-  // Get the name of the app from the apps array
-  const app = apps.find((app) => app.id === appId);
-
-  if (!app) {
+  if (loading) {
     return (
       <Box textAlign="center" mt={20}>
-        <Text fontSize="xl" color="red.500">
-          App no encontrada: {appId}
-        </Text>
-        <Button mt={4} as={Link} to="/">
-          Volver al Puerto
-        </Button>
+        <Spinner size="xl" />
+        <Text mt={4}>Cargando app...</Text>
       </Box>
     );
   }
 
-  // If the component is not loaded yet, show a loading spinner
-  if (!Component) {
+  if (error || !appConfig) {
     return (
       <Box textAlign="center" mt={20}>
-        <Spinner size="xl" />
-        <Text mt={4}>Cargando {app.name}...</Text>
+        <Text fontSize="xl" color="red.500" mb={4}>
+          App no encontrada: {appId}
+        </Text>
+        <Text fontSize="md" color="gray.500" mb={6}>
+          La aplicación que buscas no existe o no está disponible.
+        </Text>
+        <Button 
+          as={Link} 
+          to="/" 
+          colorPalette="blue" 
+          size="lg"
+        >
+          Volver al Puerto
+        </Button>
       </Box>
     );
   }
@@ -79,6 +81,26 @@ function AppLoader() {
 }
 
 export default function App() {
+  const [apps, setApps] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Only load app configurations at startup (small and fast)
+    loadAppConfigs().then((loadedApps) => {
+      setApps(loadedApps);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <Box textAlign="center" mt={20}>
+        <Spinner size="xl" />
+        <Text mt={4}>Cargando El Puerto...</Text>
+      </Box>
+    );
+  }
+
   return (
     <Box p={6} maxW="container.md" mx="auto">
       <Routes>
