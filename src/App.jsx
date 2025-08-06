@@ -6,11 +6,11 @@ import {
   SimpleGrid,
   Text,
   VStack,
-  Spinner,
 } from "@chakra-ui/react";
 import { loadAppConfigs, loadApp } from "@/utils/loadApps.js";
 import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
 import { BackToPortButton } from "@/components/BackToPortButton.jsx";
+import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 
 function AppLoader() {
   const { appId } = useParams();
@@ -42,12 +42,7 @@ function AppLoader() {
   }, [appId, navigate]);
 
   if (loading) {
-    return (
-      <Box textAlign="center" mt={20}>
-        <Spinner size="xl" />
-        <Text mt={4}>Cargando app...</Text>
-      </Box>
-    );
+    return <LoadingSpinner message="Cargando app..." />;
   }
 
   if (error) {
@@ -87,12 +82,7 @@ export default function App() {
   }, []);
 
   if (loading) {
-    return (
-      <Box textAlign="center" mt={20}>
-        <Spinner size="xl" />
-        <Text mt={4}>Cargando El Puerto...</Text>
-      </Box>
-    );
+    return <LoadingSpinner message="Cargando El Puerto..." />;
   }
 
   return (
