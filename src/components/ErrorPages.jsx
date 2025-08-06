@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Button, Text, VStack } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Box, Text, VStack } from "@chakra-ui/react";
+import { BackToPortButton } from "./BackToPortButton.jsx";
 
 // Component for when an app is not found
 export function AppNotFound({ appId }) {
@@ -17,15 +17,7 @@ export function AppNotFound({ appId }) {
         <Text fontSize="md" color="gray.500">
           Qué andarías buscando...
         </Text>
-        <Button 
-          as={Link} 
-          to="/" 
-          colorPalette="blue" 
-          size="lg"
-          mt={4}
-        >
-          Volver al Puerto
-        </Button>
+        <BackToPortButton mt={4} />
       </VStack>
     </Box>
   );
@@ -53,15 +45,7 @@ export function AppLoadError({ appId, error }) {
         <Text fontSize="md" color="gray.500">
           Algo salió mal pero no es culpa tuya. Inténtalo de nuevo más tarde.
         </Text>
-        <Button 
-          as={Link} 
-          to="/" 
-          colorPalette="blue" 
-          size="lg"
-          mt={4}
-        >
-          Volver al Puerto
-        </Button>
+        <BackToPortButton mt={4} />
       </VStack>
     </Box>
   );
@@ -82,15 +66,7 @@ export function PageNotFound() {
         <Text fontSize="md" color="gray.500">
           La página que buscas debe ser solo una leyenda...
         </Text>
-        <Button 
-          as={Link} 
-          to="/" 
-          colorPalette="blue" 
-          size="lg"
-          mt={4}
-        >
-          Volver al Puerto
-        </Button>
+        <BackToPortButton mt={4} />
       </VStack>
     </Box>
   );

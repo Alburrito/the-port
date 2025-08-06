@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { loadAppConfigs, loadApp } from "@/utils/loadApps.js";
 import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
+import { BackToPortButton } from "@/components/BackToPortButton.jsx";
 
 function AppLoader() {
   const { appId } = useParams();
@@ -65,9 +66,9 @@ function AppLoader() {
   // Render the component once it's loaded
   return (
     <Box>
-      <Button variant={'plain'} as={Link} to="/">
+      <BackToPortButton variant="plain" size="md" mb={4}>
         {"<< Volver al Puerto"}
-      </Button>
+      </BackToPortButton>
       <Component />
     </Box>
   );
