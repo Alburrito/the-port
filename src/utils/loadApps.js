@@ -1,6 +1,12 @@
+// Cache glob patterns to avoid recreating them on every function call
+const configModules = import.meta.glob("../apps/*/config.js");
+const componentModules = import.meta.glob("../apps/*/index.jsx");
+
+// Simple cache for loaded apps to avoid reloading them
+const appCache = new Map();
+
 // Function to load only app configurations (light for startup)
 export async function loadAppConfigs() {
-  const configModules = import.meta.glob("../apps/*/config.js");
   const apps = [];
 
   for (const path in configModules) {
@@ -19,8 +25,10 @@ export async function loadAppConfigs() {
 
 // Function to load a specific app (configuration + component)
 export async function loadApp(appId) {
-  const configModules = import.meta.glob("../apps/*/config.js");
-  const componentModules = import.meta.glob("../apps/*/index.jsx");
+  // Check cache first
+  if (appCache.has(appId)) {
+    return appCache.get(appId);
+  }
   
   const configPath = `../apps/${appId}/config.js`;
   const componentPath = `../apps/${appId}/index.jsx`;
@@ -37,22 +45,24 @@ export async function loadApp(appId) {
       componentModules[componentPath]()
     ]);
 
-    return {
+    const appData = {
       config: configModule.config,
       component: componentModule.default
     };
+
+    // Cache the result for future use
+    appCache.set(appId, appData);
+    
+    return appData;
   } catch (error) {
     console.error(`Error loading app "${appId}":`, error);
     throw error;
   }
 }
 
-// Functions that check if an app exists
+// Function that checks if an app exists
 // It searches for both config and main component files
 export function appExists(appId) {
-  const configModules = import.meta.glob("../apps/*/config.js");
-  const componentModules = import.meta.glob("../apps/*/index.jsx");
-  
   const configPath = `../apps/${appId}/config.js`;
   const componentPath = `../apps/${appId}/index.jsx`;
 
