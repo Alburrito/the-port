@@ -9,6 +9,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { loadAppConfigs, loadApp } from "@/utils/loadApps.js";
+import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
 
 function AppLoader() {
   const { appId } = useParams();
@@ -48,25 +49,17 @@ function AppLoader() {
     );
   }
 
-  if (error || !appConfig) {
-    return (
-      <Box textAlign="center" mt={20}>
-        <Text fontSize="xl" color="red.500" mb={4}>
-          App no encontrada: {appId}
-        </Text>
-        <Text fontSize="md" color="gray.500" mb={6}>
-          La aplicación que buscas no existe o no está disponible.
-        </Text>
-        <Button 
-          as={Link} 
-          to="/" 
-          colorPalette="blue" 
-          size="lg"
-        >
-          Volver al Puerto
-        </Button>
-      </Box>
-    );
+  if (error) {
+    // Check if it's a "not found" error vs other loading errors
+    if (error.includes("not found")) {
+      return <AppNotFound appId={appId} />;
+    } else {
+      return <AppLoadError appId={appId} error={error} />;
+    }
+  }
+
+  if (!appConfig) {
+    return <AppNotFound appId={appId} />;
   }
 
   // Render the component once it's loaded
@@ -143,6 +136,9 @@ export default function App() {
         />
 
         <Route path="/app/:appId" element={<AppLoader />} />
+        
+        {/* Catch-all route for 404 pages */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Box>
   );
