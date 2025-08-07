@@ -3,7 +3,8 @@ import { Box, Text, Button, VStack, Collapsible, Separator } from "@chakra-ui/re
 import wordsData from "./words.json";
 import { getRandomDifferentIndex } from "../../utils/randomUtils.js";
 
-export default function WordsGeneratorApp() {
+export default function WordsGeneratorApp({ backButtonHeightVh }) {
+  const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
   const colorSchemes = [
     { bg: "#2D3748", text: "white"},
     { bg: "#1A202C", text: "white"},
@@ -39,27 +40,29 @@ export default function WordsGeneratorApp() {
 
   return (
     <Box 
-      minH="calc(100vh - 80px)"
+      minH={availableHeight}
+      maxH={availableHeight}
       w="100%"
       background={currentColorScheme.bg}
       color={currentColorScheme.text}
-      p={4}
       display="flex"
       flexDirection="column"
       overflow="hidden"
     >
-      <Separator my={4} />
+      <Box px={4} pt={4}>
+        <Separator my={4} />
 
-      <Box textAlign="center">
-        <Text fontSize="3xl" fontWeight="bold">
-          Generador de Palabras
-        </Text>
-      </Box>
-      
-      <Separator my={4} />
+        <Box textAlign="center">
+          <Text fontSize="3xl" fontWeight="bold">
+            Generador de Palabras
+          </Text>
+        </Box>
         
-      <Box textAlign="center" flex="1" display="flex" flexDirection="column">
-        <Text fontSize="2xl" color={currentColorScheme.text} mb={4} fontWeight="bold">
+        <Separator my={4} />
+      </Box>
+        
+      <Box textAlign="center" flex="1" display="flex" flexDirection="column" px={4} mt={8}>
+        <Text fontSize="3xl" color={currentColorScheme.text} mb={4} fontWeight="bold">
           {currentWord.word.charAt(0).toUpperCase() + currentWord.word.slice(1)}
         </Text>
 
@@ -115,7 +118,7 @@ export default function WordsGeneratorApp() {
         </Collapsible.Root>
       </Box>
 
-      <Box textAlign="center" pb={4}>
+      <Box textAlign="center" px={4} pb={10}>
         <Button 
           onClick={getRandomWord} 
           colorScheme="whiteAlpha" 

@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { loadAppConfigs } from "@/utils/loadApps.js";
 import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
-import { BackToPortButton } from "@/components/BackToPortButton.jsx";
+import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPortButton.jsx";
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 import { useAppLoader } from "@/hooks/useAppLoader.js";
 
@@ -37,11 +37,17 @@ function AppLoader() {
   // Render the component once it's loaded
   return (
     <Box minH="100vh" maxH="100vh" display="flex" flexDirection="column">
-      <BackToPortButton variant="plain" size="md">
-        {"<< Volver al Puerto"}
-      </BackToPortButton>
-      <Box flex="1">
-        <Component />
+      <Box 
+        bg="gray.800" 
+        px={4} 
+        py={2}
+      >
+        <BackToPortButton variant="plain" size="md" color="white">
+          {"<< Volver al Puerto"}
+        </BackToPortButton>
+      </Box>
+      <Box flex="1" overflow="hidden">
+        <Component backButtonHeightVh={BACK_BUTTON_HEIGHT_VH} />
       </Box>
     </Box>
   );
@@ -64,12 +70,12 @@ export default function App() {
   }
 
   return (
-    <Box p={6} maxW="container.md" mx="auto">
+    <>
       <Routes>
         <Route
           path="/"
           element={
-            <>
+            <Box p={6} maxW="container.md" mx="auto">
               <VStack spacing={4} mb={8}>
                 <Text fontSize="5xl" fontWeight="bold" textAlign="center">
                   El Puerto
@@ -100,7 +106,7 @@ export default function App() {
                   );
                 })}
               </SimpleGrid>
-            </>
+            </Box>
           }
         />
 
@@ -109,6 +115,6 @@ export default function App() {
         {/* Catch-all route for 404 pages */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </Box>
+    </>
   );
 }
