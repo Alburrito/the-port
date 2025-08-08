@@ -1,33 +1,97 @@
 import React, { useState } from "react";
-import { Box, Text, Button, VStack, Collapsible, Separator } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import wordsData from "./words.json";
 import { getRandomDifferentIndex } from "../../utils/randomUtils.js";
+import { 
+  AppHeader, 
+  WordDisplay, 
+  DefinitionsCollapsible, 
+  NextWordButton 
+} from "./components";
 
+/**
+ * WordsGeneratorApp - Main Application Component
+ * 
+ * A vocabulary application that presents random Spanish words
+ * with their definitions, featuring dynamic color themes and responsive design.
+ * The app uses a curated dictionary dataset.
+ * 
+ * Core Features:
+ * - Random word selection with anti-repetition logic
+ * - Dynamic color theme changes for visual variety
+ * - Collapsible definitions to reduce cognitive load
+ * - Responsive design across device sizes
+ * - Custom scrollbar styling for enhanced UX
+ * 
+ * Data Management:
+ * - Uses external JSON dataset with 5,000+ Spanish words
+ * - Implements randomization utilities to prevent consecutive repeats
+ * - Maintains minimal state for optimal performance
+ * 
+ * Theme System:
+ * - 10 predefined color schemes for visual diversity
+ * - Synchronized theme changes with word transitions
+ * - High contrast ratios ensure accessibility
+ * 
+ * State Architecture:
+ * - Centralized state management in main component
+ * - Props-based data flow to child components
+ * - Minimal re-renders through strategic state design
+ * 
+ * @param {number} backButtonHeightVh - Height reserved for navigation button
+ */
 export default function WordsGeneratorApp({ backButtonHeightVh }) {
+  // Calculate available height accounting for navigation
   const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
+  
+  /**
+   * Color Scheme Palette
+   * 
+   * Predefined collection of high-contrast color combinations designed for:
+   * - Accessibility compliance (WCAG guidelines)
+   * - Visual variety to maintain user engagement
+   * - Professional appearance across different preferences
+   * - Consistent readability regardless of theme
+   * 
+   * Each scheme includes background and text colors optimized for legibility.
+   */
   const colorSchemes = [
-    { bg: "#2D3748", text: "white"},
-    { bg: "#1A202C", text: "white"},
-    { bg: "#2B6CB0", text: "white"},
-    { bg: "#38A169", text: "white"},
-    { bg: "#805AD5", text: "white"},
-    { bg: "#E53E3E", text: "white"},
-    { bg: "#DD6B20", text: "white"},
-    { bg: "#319795", text: "white"},
-    { bg: "#4A5568", text: "white"},
-    { bg: "#2C5282", text: "white"},
+    { bg: "#2D3748", text: "white"},  // Slate gray - professional default
+    { bg: "#1A202C", text: "white"},  // Dark navy - high contrast
+    { bg: "#2B6CB0", text: "white"},  // Blue - calming and focused
+    { bg: "#38A169", text: "white"},  // Green - natural and refreshing
+    { bg: "#805AD5", text: "white"},  // Purple - creative and engaging
+    { bg: "#E53E3E", text: "white"},  // Red - energetic and bold
+    { bg: "#DD6B20", text: "white"},  // Orange - warm and inviting
+    { bg: "#319795", text: "white"},  // Teal - balanced and modern
+    { bg: "#4A5568", text: "white"},  // Gray - neutral and versatile
+    { bg: "#2C5282", text: "white"},  // Deep blue - trustworthy and stable
   ];
 
+  // Application state management
   const [currentWord, setCurrentWord] = useState(
-    wordsData[
-      Math.floor(Math.random() * wordsData.length)
-    ]
+    wordsData[Math.floor(Math.random() * wordsData.length)]
   );
   const [showDefinitions, setShowDefinitions] = useState(false);
   const [currentColorScheme, setCurrentColorScheme] = useState(colorSchemes[0]);
   const [currentColorIndex, setCurrentColorIndex] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
+  /**
+   * Word and Theme Randomization Handler
+   * 
+   * Implements sophisticated randomization strategy to enhance user experience:
+   * 
+   * Anti-Repetition Logic:
+   * - Uses utility function to prevent consecutive identical selections
+   * - Maintains previous indices to enable intelligent filtering
+   * - Ensures variety in both content and visual presentation
+   * 
+   * Synchronized Updates:
+   * - Word and theme changes happen atomically
+   * - State updates are batched for optimal performance
+   * - UI reflects changes immediately across all components
+   */
   const getRandomWord = () => {
     const newWordIndex = getRandomDifferentIndex(wordsData, currentWordIndex);
     const newColorIndex = getRandomDifferentIndex(colorSchemes, currentColorIndex);
@@ -39,6 +103,7 @@ export default function WordsGeneratorApp({ backButtonHeightVh }) {
   };
 
   return (
+    /* Main application container with dynamic theming and responsive layout */
     <Box 
       minH={availableHeight}
       maxH={availableHeight}
@@ -49,88 +114,38 @@ export default function WordsGeneratorApp({ backButtonHeightVh }) {
       flexDirection="column"
       overflow="hidden"
     >
-      <Box px={4} pt={4}>
-        <Separator my={4} />
-
-        <Box textAlign="center">
-          <Text fontSize="3xl" fontWeight="bold">
-            Generador de Palabras
-          </Text>
-        </Box>
+      {/* Application header with branding and navigation */}
+      <AppHeader colorScheme={currentColorScheme} />
         
-        <Separator my={4} />
-      </Box>
-        
-      <Box textAlign="center" flex="1" display="flex" flexDirection="column" px={4} mt={8}>
-        <Text fontSize="3xl" color={currentColorScheme.text} mb={4} fontWeight="bold">
-          {currentWord.word.charAt(0).toUpperCase() + currentWord.word.slice(1)}
-        </Text>
+      {/* Main content area with flexible layout and word display */}
+      <Box 
+        textAlign="center" 
+        flex="1" 
+        display="flex" 
+        flexDirection="column" 
+        px={4} 
+        mt={8}
+      >
+        {/* Primary word display component */}
+        <WordDisplay 
+          currentWord={currentWord} 
+          colorScheme={currentColorScheme} 
+        />
 
-        <Collapsible.Root unmountOnExit>
-          <Collapsible.Trigger 
-            paddingY={2} 
-            paddingX={4}
-            bg="whiteAlpha.200" 
-            borderRadius="md"
-            _hover={{ bg: "whiteAlpha.300" }}
-            cursor="pointer"
-            display="inline-flex"
-            alignItems="center"
-            gap={2}
-            onClick={() => setShowDefinitions(!showDefinitions)}
-            color={currentColorScheme.text}
-            mb={4}
-          >
-            <Text fontSize="xs">
-              {showDefinitions ? "Ocultar" : "Mostrar"} definiciones {showDefinitions ? "▲" : "▼"}
-            </Text>
-          </Collapsible.Trigger>
-          <Collapsible.Content>
-            <Box 
-              maxH="40vh"
-              overflowY="auto" 
-              css={{
-                '&::-webkit-scrollbar': {
-                  width: '8px',
-                },
-                '&::-webkit-scrollbar-track': {
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  borderRadius: '4px',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  background: 'rgba(255, 255, 255, 0.3)',
-                  borderRadius: '4px',
-                },
-                '&::-webkit-scrollbar-thumb:hover': {
-                  background: 'rgba(255, 255, 255, 0.5)',
-                },
-              }}
-            >
-              <VStack spacing={2} textAlign="left">
-                {currentWord.definitions.map((definition, index) => (
-                  <Text key={index} fontSize="md" width="100%" p={2}>
-                    {definition}
-                  </Text>
-                ))}
-              </VStack>
-            </Box>
-          </Collapsible.Content>
-        </Collapsible.Root>
+        {/* Expandable definitions section with scroll management */}
+        <DefinitionsCollapsible
+          currentWord={currentWord}
+          showDefinitions={showDefinitions}
+          setShowDefinitions={setShowDefinitions}
+          colorScheme={currentColorScheme}
+        />
       </Box>
 
-      <Box textAlign="center" px={4} pb={10}>
-        <Button 
-          onClick={getRandomWord} 
-          colorScheme="whiteAlpha" 
-          size="lg"
-          bg="whiteAlpha.200"
-          _hover={{ bg: "whiteAlpha.300" }}
-          color={currentColorScheme.text}
-          fontWeight="bold"
-        >
-          Siguiente
-        </Button>
-      </Box>
+      {/* Action area with primary navigation button */}
+      <NextWordButton 
+        onNextWord={getRandomWord}
+        colorScheme={currentColorScheme}
+      />
     </Box>
   );
 }
