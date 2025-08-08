@@ -1,11 +1,31 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
+/**
+ * RouletteWheel Component
+ * 
+ * Renders an interactive SVG-based roulette wheel with the following key features:
+ * - Dynamic sector generation based on color array
+ * - CSS animation support for smooth spinning transitions
+ * - Responsive design that scales across different screen sizes
+ * - Polar coordinate mathematics for precise sector path calculations
+ * 
+ * The wheel uses SVG path elements to create pie-slice sectors, with each sector
+ * calculated using trigonometric functions to ensure perfect circular distribution.
+ * 
+ * @param {Array} colors - Array of color objects with {color, label} properties
+ * @param {boolean} isSpinning - Controls whether animation CSS is applied
+ * @param {number} rotation - Current rotation angle in degrees (accumulated across spins)
+ * @param {number} animationDuration - Duration of spin animation in seconds
+ */
 export function RouletteWheel({ colors, isSpinning, rotation, animationDuration }) {
+  // SVG coordinate system constants
+  // These define the center point and radius for all geometric calculations
   const radius = 180;
   const centerX = 200;
   const centerY = 200;
   
+  // Empty state: Show placeholder when no sectors are configured
   if (colors.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px">
@@ -29,30 +49,53 @@ export function RouletteWheel({ colors, isSpinning, rotation, animationDuration 
     );
   }
 
+  // Calculate equal angular distribution for all sectors
   const anglePerSector = 360 / colors.length;
   
+  /**
+   * Creates SVG path string for a pie-slice sector using polar coordinates
+   * 
+   * Mathematical approach:
+   * 1. Convert sector index to start/end angles in radians
+   * 2. Offset by -90° to position first sector at top (12 o'clock)
+   * 3. Calculate cartesian coordinates using trigonometric functions
+   * 4. Generate SVG path with proper arc flags for different sector sizes
+   * 
+   * Special case: Single sector creates a full circle path
+   * 
+   * @param {number} index - Zero-based sector index
+   * @returns {string} SVG path string for the sector
+   */
   function createSectorPath(index) {
-    const startAngle = (index * anglePerSector - 90) * (Math.PI / 180); // -90 so it starts at the top
+    // Convert degrees to radians, offset by -90° to start at top
+    const startAngle = (index * anglePerSector - 90) * (Math.PI / 180);
     const endAngle = ((index + 1) * anglePerSector - 90) * (Math.PI / 180);
     
+    // Calculate cartesian coordinates for arc endpoints using polar-to-cartesian conversion
     const x1 = centerX + radius * Math.cos(startAngle);
     const y1 = centerY + radius * Math.sin(startAngle);
     const x2 = centerX + radius * Math.cos(endAngle);
     const y2 = centerY + radius * Math.sin(endAngle);
     
+    // Single sector: create full circle using two 180° arcs
     if (colors.length === 1) {
       return `M ${centerX} ${centerY} m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius*2},0 a ${radius},${radius} 0 1,1 -${radius*2},0`;
     }
     
+    // Multiple sectors: create pie slice with appropriate arc flag
+    // Large arc flag = 1 when sector > 180°, 0 otherwise
     const largeArcFlag = anglePerSector > 180 ? 1 : 0;
     
+    // SVG path: Move to center, Line to start, Arc to end, Close path
     return `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
   }
 
   return (
     <Box>
-      {/* Ruleta existente */}
+      {/* Main wheel container with responsive sizing and pointer indicator */}
       <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px" position="relative">
+        {/* Fixed pointer/indicator arrow positioned at top center */}
+        {/* This triangle points downward to indicate the winning sector */}
         <Box 
           position="absolute" 
           top="10px" 
@@ -67,14 +110,18 @@ export function RouletteWheel({ colors, isSpinning, rotation, animationDuration 
           filter="drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
         />
         
+        {/* Animated wheel container - rotation and timing controlled by parent state */}
         <Box
           w={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
           h={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
           style={{
+            // Conditional CSS animation: only apply transition during spinning
+            // Cubic-bezier creates deceleration effect for realistic wheel physics
             transition: isSpinning ? `transform ${animationDuration}s cubic-bezier(0.17, 0.67, 0.83, 0.67)` : undefined,
             transform: `rotate(${rotation}deg)`
           }}
         >
+          {/* SVG wheel with responsive viewBox and drop shadow */}
           <svg
             width="100%"
             height="100%"
@@ -83,6 +130,7 @@ export function RouletteWheel({ colors, isSpinning, rotation, animationDuration 
               filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.15))",
             }}
           >
+            {/* Render each sector as an SVG path element */}
             {colors.map((color, index) => (
               <path
                 key={index}
@@ -93,6 +141,7 @@ export function RouletteWheel({ colors, isSpinning, rotation, animationDuration 
               />
             ))}
             
+            {/* Center hub/axle - visual anchor point for the wheel */}
             <circle
               cx={centerX}
               cy={centerY}

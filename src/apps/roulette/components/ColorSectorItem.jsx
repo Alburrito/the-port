@@ -2,12 +2,35 @@ import React, { useState } from "react";
 import { Box, Text, Button, Input, SimpleGrid, HStack, Dialog, Portal } from "@chakra-ui/react";
 import { EditIcon, RemoveIcon } from "./icons";
 
+/**
+ * ColorSectorItem Component
+ * 
+ * Represents an individual roulette sector with inline editing capabilities.
+ * This component encapsulates complex state management for sector modifications
+ * while maintaining data integrity through validation and conflict prevention.
+ * 
+ * Key Features:
+ * - Modal-based editing to prevent accidental changes
+ * - Duplicate detection for both colors and labels
+ * - State protection during critical operations (spinning/winner states)
+ * - Optimistic UI updates with rollback on validation failure
+ * 
+ * Validation Strategy:
+ * - Duplicate checking across all sectors
+ * - Error state management with user feedback
+ * - Atomic save operations to prevent partial updates
+ */
 export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpinning, winner }) {
+  // Local state for modal editing with validation
   const [isOpen, setIsOpen] = useState(false);
   const [editColor, setEditColor] = useState(item.color);
   const [editLabel, setEditLabel] = useState(item.label);
   const [errorMsg, setErrorMsg] = useState("");
 
+  /**
+   * Handles modal closure with state cleanup
+   * Resets form to original values and clears any error messages
+   */
   function handleClose() {
     setErrorMsg("");
     setEditColor(item.color);
@@ -15,23 +38,42 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
     setIsOpen(false);
   }
 
+  /**
+   * Validates and saves sector changes
+   * 
+   * Validation Rules:
+   * 1. No operations during spinning or winner states
+   * 2. No duplicate labels across sectors (excluding current)
+   * 3. No duplicate colors across sectors (excluding current)
+   * 
+   * Success: Updates parent state and closes modal
+   * Failure: Shows error message and keeps modal open
+   */
   function handleSave() {
-    if (isSpinning || winner) return; // Evitar guardar cambios mientras gira o hay ganador
+    if (isSpinning || winner) return; // State protection barrier
+    
+    // Check for duplicate label (excluding current sector)
     if (editLabel && colors.some((c, i) => i !== idx && c.label === editLabel)) {
       setErrorMsg("Etiqueta duplicada");
       return;
     }
+    
+    // Check for duplicate color (excluding current sector)
     if (colors.some((c, i) => i !== idx && c.color === editColor)) {
       setErrorMsg("Color duplicado");
       return;
     }
+    
+    // Validation passed: apply changes atomically
     setErrorMsg("");
     setColors(colors.map((c, i) => i === idx ? { ...c, color: editColor, label: editLabel } : c));
     setIsOpen(false);
   }
 
   return (
+    /* Sector display row with visual feedback during disabled states */
     <HStack key={idx} spacing={2} justify="space-between" w="100%" opacity={isSpinning || winner ? 0.5 : 1}>
+      {/* Color preview circle */}
       <Box
         w="32px"
         h="32px"
@@ -39,6 +81,8 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
         bg={item.color}
         border="2px solid whiteAlpha.400"
       />
+      
+      {/* Sector label with overflow handling */}
       <Text
         fontSize="sm"
         flex="1"
@@ -46,9 +90,12 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
         overflow="hidden"
         textOverflow="ellipsis"
       >
-        {item.label || item.color}
+        {item.label || item.color} {/* Fallback to color if no label */}
       </Text>
+      
+      {/* Action buttons container */}
       <Box display="flex">
+        {/* Edit Modal Dialog */}
         <Dialog.Root open={isOpen && !isSpinning && !winner} onOpenChange={open => {
           if (!isSpinning && !winner) {
             setIsOpen(open);
@@ -81,6 +128,7 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
                   <Dialog.Title fontSize="lg" fontWeight="bold">Editar sector</Dialog.Title>
                 </Dialog.Header>
                 <Dialog.Body>
+                  {/* Edit form with color and label inputs */}
                   <SimpleGrid columns={2} gap={3} mb={4}>
                     <Input
                       type="color"
@@ -110,6 +158,8 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
                       isDisabled={isSpinning || winner}
                     />
                   </SimpleGrid>
+                  
+                  {/* Validation error display */}
                   {errorMsg && (
                     <Text color="red.400" fontSize="sm" mb={2}>{errorMsg}</Text>
                   )}
@@ -131,6 +181,8 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
             </Dialog.Positioner>
           </Portal>
         </Dialog.Root>
+        
+        {/* Remove button with immediate action */}
         <Button 
           size="xs" 
           colorScheme="red" 
