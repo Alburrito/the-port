@@ -52,55 +52,58 @@ export function RouletteWheel({ colors, isSpinning, rotation }) {
   }
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px" position="relative">
-      <Box 
-        position="absolute" 
-        top="10px" 
-        left="50%" 
-        transform="translateX(-50%)" 
-        zIndex={2}
-        w="0" 
-        h="0" 
-        borderLeft="15px solid transparent"
-        borderRight="15px solid transparent"
-        borderTop="25px solid #2D3748"
-        filter="drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
-      />
-      
-      <Box
-        w={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
-        h={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
-        transform={`rotate(${rotation}deg)`}
-        transition={isSpinning ? `transform ${animationDuration}s cubic-bezier(0.23, 1, 0.32, 1)` : "none"}
-        style={{ transformOrigin: "center" }}
-      >
-        <svg
-          width="100%"
-          height="100%"
-          viewBox="0 0 400 400"
-          style={{
-            filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.15))",
-          }}
+    <Box>
+      {/* Ruleta existente */}
+      <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px" position="relative">
+        <Box 
+          position="absolute" 
+          top="10px" 
+          left="50%" 
+          transform="translateX(-50%)" 
+          zIndex={2}
+          w="0" 
+          h="0" 
+          borderLeft="15px solid transparent"
+          borderRight="15px solid transparent"
+          borderTop="25px solid #2D3748"
+          filter="drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
+        />
+        
+        <Box
+          w={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
+          h={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
+          transform={`rotate(${rotation}deg)`}
+          transition={isSpinning ? `transform ${animationDuration}s cubic-bezier(0.23, 1, 0.32, 1)` : "none"}
+          style={{ transformOrigin: "center" }}
         >
-          {colors.map((color, index) => (
-            <path
-              key={index}
-              d={createSectorPath(index)}
-              fill={color.color}
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 400 400"
+            style={{
+              filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.15))",
+            }}
+          >
+            {colors.map((color, index) => (
+              <path
+                key={index}
+                d={createSectorPath(index)}
+                fill={color.color}
+                stroke="#fff"
+                strokeWidth="2"
+              />
+            ))}
+            
+            <circle
+              cx={centerX}
+              cy={centerY}
+              r="20"
+              fill="#2D3748"
               stroke="#fff"
-              strokeWidth="2"
+              strokeWidth="3"
             />
-          ))}
-          
-          <circle
-            cx={centerX}
-            cy={centerY}
-            r="20"
-            fill="#2D3748"
-            stroke="#fff"
-            strokeWidth="3"
-          />
-        </svg>
+          </svg>
+        </Box>
       </Box>
     </Box>
   );

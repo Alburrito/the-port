@@ -27,9 +27,10 @@ export default function RouletteApp({ backButtonHeightVh }) {
   const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
 
   const handleRemoveColor = useCallback((idx) => {
+    if (isSpinning || winner) return; // Evitar eliminación mientras gira o hay ganador
     setColors(prev => prev.filter((_, i) => i !== idx));
     setWinner(null);
-  }, []);
+  }, [isSpinning, winner]);
 
   const handleColorInputChange = useCallback((e) => {
     setColorInput(e.target.value);
@@ -40,6 +41,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
   }, []);
 
   const handleAddColor = useCallback(() => {
+    if (isSpinning || winner) return; // Evitar añadir mientras gira o hay ganador
     setErrorMsg("");
     if (!colorInput) return;
     if (labelInput && colors.some(item => item.label === labelInput)) {
@@ -53,7 +55,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
     setColors(prev => [...prev, { color: colorInput, label: labelInput }]);
     setLabelInput("");
     setWinner(null);
-  }, [colorInput, labelInput, colors]);
+  }, [colorInput, labelInput, colors, isSpinning, winner]);
 
   const spinRoulette = useCallback(() => {
     if (isSpinning || colors.length < 2) return;
@@ -61,10 +63,10 @@ export default function RouletteApp({ backButtonHeightVh }) {
     setIsSpinning(true);
     setWinner(null);
     
-    const actualDuration = 3;
+    const actualDuration = 5;
     
     const minSpins = 3;
-    const maxSpins = 6;
+    const maxSpins = 20;
     const spins = minSpins + Math.random() * (maxSpins - minSpins);
     const randomAngle = Math.random() * 360;
     const totalRotation = rotation + (spins * 360) + randomAngle;
@@ -95,6 +97,16 @@ export default function RouletteApp({ backButtonHeightVh }) {
     setWinner(null);
   }, [spinTimeoutId]);
 
+  const resetSpin = useCallback(() => {
+    if (spinTimeoutId) {
+      clearTimeout(spinTimeoutId);
+      setSpinTimeoutId(null);
+    }
+    setIsSpinning(false);
+    setWinner(null);
+    setRotation(0);
+  }, [spinTimeoutId]);
+
   return (
     <Box minH={availableHeight} maxH={availableHeight} w="100%" display="flex" flexDirection="column" px={4} py={6}>
       <RouletteWheel 
@@ -110,6 +122,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
         setColors={setColors}
         onRemoveColor={handleRemoveColor}
         isSpinning={isSpinning}
+        winner={winner}
       />
 
       <AddSectorForm 
@@ -120,9 +133,11 @@ export default function RouletteApp({ backButtonHeightVh }) {
         onAddColor={handleAddColor}
         onSpinRoulette={spinRoulette}
         onCancelSpin={cancelSpin}
+        onReset={resetSpin}
         isSpinning={isSpinning}
         colorsCount={colors.length}
         errorMsg={errorMsg}
+        winner={winner}
       />
     </Box>
   );

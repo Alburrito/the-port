@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Text, Button, Input, SimpleGrid, HStack, Dialog, Portal } from "@chakra-ui/react";
 import { EditIcon, RemoveIcon } from "./icons";
 
-export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpinning }) {
+export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpinning, winner }) {
   const [isOpen, setIsOpen] = useState(false);
   const [editColor, setEditColor] = useState(item.color);
   const [editLabel, setEditLabel] = useState(item.label);
@@ -16,6 +16,7 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
   }
 
   function handleSave() {
+    if (isSpinning || winner) return; // Evitar guardar cambios mientras gira o hay ganador
     if (editLabel && colors.some((c, i) => i !== idx && c.label === editLabel)) {
       setErrorMsg("Etiqueta duplicada");
       return;
@@ -30,7 +31,7 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
   }
 
   return (
-    <HStack key={idx} spacing={2} justify="space-between" w="100%" opacity={isSpinning ? 0.5 : 1}>
+    <HStack key={idx} spacing={2} justify="space-between" w="100%" opacity={isSpinning || winner ? 0.5 : 1}>
       <Box
         w="32px"
         h="32px"
@@ -48,20 +49,26 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
         {item.label || item.color}
       </Text>
       <Box display="flex">
-        <Dialog.Root open={isOpen} onOpenChange={open => {
-          setIsOpen(open);
-          if (!open) setErrorMsg("");
+        <Dialog.Root open={isOpen && !isSpinning && !winner} onOpenChange={open => {
+          if (!isSpinning && !winner) {
+            setIsOpen(open);
+            if (!open) setErrorMsg("");
+          }
         }}>
           <Dialog.Trigger asChild>
             <Button 
               size="xs" 
               variant="ghost" 
-              onClick={() => setIsOpen(true)} 
+              onClick={() => {
+                if (!isSpinning && !winner) {
+                  setIsOpen(true);
+                }
+              }} 
               p={0} 
               minW={4} 
               h={6} 
               aria-label="Editar"
-              isDisabled={isSpinning}
+              isDisabled={isSpinning || winner}
             >
               <EditIcon />
             </Button>
@@ -86,6 +93,7 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
                       bg="none"
                       cursor="pointer"
                       borderRadius="md"
+                      isDisabled={isSpinning || winner}
                     />
                     <Input
                       value={editLabel}
@@ -99,6 +107,7 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
                       color="gray.900"
                       bg="whiteAlpha.200"
                       placeholder="Etiqueta"
+                      isDisabled={isSpinning || winner}
                     />
                   </SimpleGrid>
                   {errorMsg && (
@@ -109,7 +118,12 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
                   <Button variant="outline" colorScheme="gray" onClick={handleClose}>
                     Cancelar
                   </Button>
-                  <Button colorScheme="purple" fontWeight="bold" onClick={handleSave}>
+                  <Button 
+                    colorScheme="purple" 
+                    fontWeight="bold" 
+                    onClick={handleSave}
+                    isDisabled={isSpinning || winner}
+                  >
                     Guardar
                   </Button>
                 </Dialog.Footer>
@@ -126,7 +140,7 @@ export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpin
           minW={4} 
           h={6} 
           aria-label="Eliminar"
-          isDisabled={isSpinning}
+          isDisabled={isSpinning || winner}
         >
           <RemoveIcon />
         </Button>

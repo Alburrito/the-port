@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Text, SimpleGrid } from "@chakra-ui/react";
 import { ColorSectorItem } from "./ColorSectorItem";
 
-export function ColorsList({ colors, setColors, onRemoveColor, isSpinning }) {
+export function ColorsList({ colors, setColors, onRemoveColor, isSpinning, winner }) {
   return (
     <Box w={{ base: "100%", md: "400px" }} mx="auto" mt={8} flex="1 1 0" display="flex" flexDirection="column">
       <Text fontWeight="bold" mb={2}>Colores añadidos</Text>
@@ -33,6 +33,7 @@ export function ColorsList({ colors, setColors, onRemoveColor, isSpinning }) {
                 setColors={setColors}
                 onRemove={onRemoveColor}
                 isSpinning={isSpinning}
+                winner={winner}
               />
             ))
           )}

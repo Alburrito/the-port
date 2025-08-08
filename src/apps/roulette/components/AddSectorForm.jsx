@@ -9,9 +9,11 @@ export function AddSectorForm({
   onAddColor, 
   onSpinRoulette, 
   onCancelSpin,
+  onReset,
   isSpinning, 
   colorsCount, 
-  errorMsg
+  errorMsg,
+  winner
 }) {
   const canSpin = colorsCount >= 2;
   
@@ -34,35 +36,59 @@ export function AddSectorForm({
           bg="none"
           cursor="pointer"
           borderRadius="md"
-          isDisabled={isSpinning}
+          isDisabled={isSpinning || winner}
         />
         <Input
           placeholder="Etiqueta (opcional)"
           value={labelInput}
           onChange={setLabelInput}
-          bg="whiteAlpha.200"
-          color="gray.900"
-          border="1px solid"
-          borderColor="gray.400"
-          size="sm"
-          fontSize="sm"
-          borderRadius="md"
-          flex="1"
-          isDisabled={isSpinning}
+          isDisabled={isSpinning || winner}
         />
-        <Button 
-          colorScheme="purple" 
-          onClick={onAddColor} 
-          fontWeight="bold" 
-          size="sm" 
-          borderRadius="md"
-          isDisabled={isSpinning}
+        <Button
+          colorScheme="green"
+          onClick={onAddColor}
+          isDisabled={isSpinning || winner}
+          opacity={isSpinning || winner ? 0.6 : 1}
+          cursor={isSpinning || winner ? "not-allowed" : "pointer"}
         >
           Añadir
         </Button>
       </HStack>
 
-      {isSpinning ? (
+      {/* Botón GIRAR RULETA */}
+      {!isSpinning && !winner && canSpin && (
+        <Button 
+          colorScheme="orange" 
+          onClick={onSpinRoulette} 
+          fontWeight="bold" 
+          size="lg" 
+          borderRadius="md" 
+          w="100%" 
+          boxShadow="md"
+        >
+          GIRAR RULETA
+        </Button>
+      )}
+
+      {/* Botón AÑADIR MÁS SECTORES */}
+      {!isSpinning && !winner && !canSpin && (
+        <Button 
+          colorScheme="gray" 
+          fontWeight="bold" 
+          size="lg" 
+          borderRadius="md" 
+          w="100%" 
+          boxShadow="md"
+          isDisabled
+          opacity={0.6}
+          cursor="not-allowed"
+        >
+          AÑADE MÁS SECTORES
+        </Button>
+      )}
+
+      {/* Botón CANCELAR */}
+      {isSpinning && (
         <Button 
           colorScheme="red" 
           onClick={onCancelSpin} 
@@ -74,20 +100,20 @@ export function AddSectorForm({
         >
           CANCELAR
         </Button>
-      ) : (
+      )}
+
+      {/* Botón RESETEAR */}
+      {winner && (
         <Button 
-          colorScheme={canSpin ? "orange" : "gray"} 
-          onClick={onSpinRoulette} 
+          colorScheme="blue" 
+          onClick={onReset} 
           fontWeight="bold" 
           size="lg" 
           borderRadius="md" 
           w="100%" 
           boxShadow="md"
-          isDisabled={!canSpin}
-          opacity={!canSpin ? 0.6 : 1}
-          cursor={!canSpin ? "not-allowed" : "pointer"}
         >
-          {!canSpin ? "AÑADE MÁS SECTORES" : "GIRAR RULETA"}
+          RESETEAR
         </Button>
       )}
     </Box>
