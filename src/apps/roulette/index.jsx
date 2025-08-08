@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { RouletteWheel } from "./components/RouletteWheel";
 import { WinnerDisplay } from "./components/WinnerDisplay";
 import { ColorsList } from "./components/ColorsList";
-import { AddSectorForm } from "./components/AddSectorForm";
+import { ControlPanel } from "./components/ControlPanel";
 
 export default function RouletteApp({ backButtonHeightVh }) {
   const [colorInput, setColorInput] = useState("#E53E3E");
@@ -13,6 +13,8 @@ export default function RouletteApp({ backButtonHeightVh }) {
   const [rotation, setRotation] = useState(0);
   const [winner, setWinner] = useState(null);
   const [spinTimeoutId, setSpinTimeoutId] = useState(null);
+  const [sliderValue, setSliderValue] = useState(3);
+  const [animationDuration, setAnimationDuration] = useState(3);
   const [colors, setColors] = useState([
     // 7 sectores para empezar
     { color: "#42BC01", label: "Sector 1" },
@@ -63,7 +65,13 @@ export default function RouletteApp({ backButtonHeightVh }) {
     setIsSpinning(true);
     setWinner(null);
     
-    const actualDuration = 5;
+    let actualDuration;
+    if (sliderValue === 11) {
+      actualDuration = Math.floor(Math.random() * 10) + 1;
+    } else {
+      actualDuration = sliderValue;
+    }
+    setAnimationDuration(actualDuration);
     
     const minSpins = 3;
     const maxSpins = 20;
@@ -86,7 +94,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
     }, actualDuration * 1000);
     
     setSpinTimeoutId(timeoutId);
-  }, [isSpinning, colors, rotation]);
+  }, [isSpinning, colors, rotation, sliderValue]);
 
   const cancelSpin = useCallback(() => {
     if (spinTimeoutId) {
@@ -105,6 +113,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
     setIsSpinning(false);
     setWinner(null);
     setRotation(0);
+    setAnimationDuration(3);
   }, [spinTimeoutId]);
 
   return (
@@ -113,6 +122,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
         colors={colors} 
         isSpinning={isSpinning} 
         rotation={rotation}
+        animationDuration={animationDuration}
       />
 
       <WinnerDisplay winner={winner} />
@@ -125,7 +135,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
         winner={winner}
       />
 
-      <AddSectorForm 
+      <ControlPanel 
         colorInput={colorInput}
         setColorInput={handleColorInputChange}
         labelInput={labelInput}
@@ -138,6 +148,8 @@ export default function RouletteApp({ backButtonHeightVh }) {
         colorsCount={colors.length}
         errorMsg={errorMsg}
         winner={winner}
+        sliderValue={sliderValue}
+        setSliderValue={setSliderValue}
       />
     </Box>
   );

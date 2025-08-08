@@ -1,13 +1,11 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
-export function RouletteWheel({ colors, isSpinning, rotation }) {
+export function RouletteWheel({ colors, isSpinning, rotation, animationDuration }) {
   const radius = 180;
   const centerX = 200;
   const centerY = 200;
   
-  const animationDuration = 3;
-
   if (colors.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px">
@@ -72,9 +70,10 @@ export function RouletteWheel({ colors, isSpinning, rotation }) {
         <Box
           w={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
           h={{ base: "200px", md: "280px", lg: "340px", xl: "400px" }}
-          transform={`rotate(${rotation}deg)`}
-          transition={isSpinning ? `transform ${animationDuration}s cubic-bezier(0.23, 1, 0.32, 1)` : "none"}
-          style={{ transformOrigin: "center" }}
+          style={{
+            transition: isSpinning ? `transform ${animationDuration}s cubic-bezier(0.17, 0.67, 0.83, 0.67)` : undefined,
+            transform: `rotate(${rotation}deg)`
+          }}
         >
           <svg
             width="100%"

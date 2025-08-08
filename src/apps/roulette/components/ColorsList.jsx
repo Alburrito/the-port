@@ -5,7 +5,6 @@ import { ColorSectorItem } from "./ColorSectorItem";
 export function ColorsList({ colors, setColors, onRemoveColor, isSpinning, winner }) {
   return (
     <Box w={{ base: "100%", md: "400px" }} mx="auto" mt={8} flex="1 1 0" display="flex" flexDirection="column">
-      <Text fontWeight="bold" mb={2}>Colores añadidos</Text>
       <Box
         flex="1 1 0"
         minH="0"
