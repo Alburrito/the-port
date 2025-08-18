@@ -2,22 +2,17 @@ import React from "react";
 import { Box, Text, Slider } from "@chakra-ui/react";
 
 /**
- * SpinDurationSlider Component
+ * Duration control slider with random mode
  * 
- * Provides user control over roulette spin duration with special handling
- * for randomization. This component implements a bounded control system
- * where users can select predictable timing (1-10 seconds) or delegate
- * to random duration generation.
+ * Bounded input control for spin duration with special randomization case.
+ * Values 1-10 map directly to seconds, value 11 triggers random duration.
+ * State protection disables control during spinning and result states.
  * 
- * Value Mapping:
- * - Values 1-10: Direct second mapping for predictable spins
- * - Value 11: Special "random" mode that triggers algorithmic duration
- * 
- * The slider is disabled during spinning and winner states to prevent
- * mid-operation configuration changes that could disrupt timing calculations.
- * 
- * UX Design: Clear labeling with singular/plural grammar and special
- * text for the random option enhances user understanding.
+ * Implementation details:
+ * - Range: 1-11 (1-10 seconds + random option)
+ * - Special case: Value 11 generates random duration (2-8 seconds)
+ * - State management: Disabled during isSpinning && winner states
+ * - Text rendering: Conditional display for direct/random modes
  */
 export function SpinDurationSlider({ 
   sliderValue, 

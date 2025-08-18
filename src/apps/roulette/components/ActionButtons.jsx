@@ -2,21 +2,19 @@ import React from "react";
 import { Button } from "@chakra-ui/react";
 
 /**
- * ActionButtons Component
+ * State-based action button controller
  * 
- * Implements state-driven conditional rendering for roulette control actions.
- * This component demonstrates a finite state machine approach where only
- * one primary action is available at any given time, preventing user confusion
- * and maintaining application state integrity.
+ * Implements conditional rendering based on roulette application state.
+ * Single-action paradigm prevents concurrent operations and race conditions.
+ * State machine logic ensures only valid actions are available.
  * 
- * State-to-Button Mapping:
- * - Initial state (!isSpinning && !winner && canSpin): SPIN button
- * - Insufficient sectors (!isSpinning && !winner && !canSpin): Disabled hint
- * - Spinning state (isSpinning): CANCEL button only
- * - Winner state (winner): RESET button only
+ * State mappings:
+ * - Ready state (!isSpinning && !winner && canSpin): SPIN button
+ * - Insufficient sectors (!isSpinning && !winner && !canSpin): Disabled state
+ * - Active spinning (isSpinning): CANCEL button
+ * - Result state (winner): RESET button
  * 
- * This design ensures atomic operations and prevents race conditions
- * that could occur with multiple simultaneous actions.
+ * Prevents simultaneous spin/cancel/reset operations through state exclusion.
  */
 export function ActionButtons({ 
   isSpinning, 

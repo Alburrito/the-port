@@ -2,17 +2,12 @@ import React from "react";
 import { Box, Text, Separator } from "@chakra-ui/react";
 
 /**
- * AppHeader Component
+ * Application header with title and separators
  * 
- * Renders the application title with decorative separators.
+ * Centered layout header component with decorative separator elements.
+ * Implements responsive typography with color scheme integration.
  * 
- * Design Principles:
- * - Centered layout for balanced visual weight
- * - Separator elements create clear content boundaries
- * - Responsive typography scales appropriately
- * - Clean, minimal design focuses attention on functionality
- * 
- * @param {Object} colorScheme - Current color theme object with bg/text properties
+ * @param {Object} colorScheme - Color theme with bg/text properties
  */
 export function AppHeader({ colorScheme }) {
   return (

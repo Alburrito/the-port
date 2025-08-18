@@ -2,18 +2,13 @@ import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
 /**
- * WordDisplay Component
+ * Primary word renderer with text processing
  * 
- * Renders the current word with proper capitalization and styling.
- * This component serves as the primary content focus, displaying the word.
+ * Displays current word with automatic capitalization and theme integration.
+ * String manipulation capitalizes first character while preserving remainder.
  * 
- * Text Processing:
- * - Capitalizes first letter while preserving original casing
- * - Uses prominent typography to ensure readability
- * - Applies current color scheme for theme consistency
- * 
- * @param {Object} currentWord - Word object containing word and definitions
- * @param {Object} colorScheme - Current color theme object with bg/text properties
+ * @param {Object} currentWord - Word object with word and definitions properties
+ * @param {Object} colorScheme - Color theme with bg/text properties
  */
 export function WordDisplay({ currentWord, colorScheme }) {
   return (

@@ -2,26 +2,21 @@ import React from "react";
 import { Text, Button, Input, HStack } from "@chakra-ui/react";
 
 /**
- * AddSectorControls Component
+ * Sector configuration input controls
  * 
- * Manages roulette sector configuration through controlled form inputs.
- * This component implements a dual-input system for color and label selection,
- * with comprehensive state protection during critical operations.
+ * Implements controlled form inputs for roulette sector creation.
+ * Dual-input system with HTML5 color picker and text field.
+ * State protection prevents configuration changes during critical operations.
  * 
- * Input Validation Strategy:
- * - Color input: HTML5 color picker ensures valid hex values
- * - Label input: Optional text field with placeholder guidance
- * - Error messaging: Contextual feedback for validation failures
+ * Input validation:
+ * - Color: HTML5 color picker returns valid hex values
+ * - Label: Optional text field, empty string if unused
+ * - Error handling: Displays validation messages from parent component
  * 
- * State Protection:
- * - All inputs disabled during spinning to prevent configuration drift
- * - Visual feedback (opacity, cursor) indicates unavailable states
- * - Atomic add operation prevents partial sector creation
- * 
- * UX Considerations:
- * - Compact horizontal layout optimizes screen space
- * - Color picker provides visual feedback before selection
- * - Optional labeling reduces friction for quick setup
+ * State management:
+ * - Disabled during isSpinning and winner states
+ * - Visual feedback through opacity and cursor properties
+ * - Atomic sector creation prevents partial data
  */
 export function AddSectorControls({ 
   colorInput, 
@@ -35,14 +30,14 @@ export function AddSectorControls({
 }) {
   return (
     <>
-      {/* Error feedback: Display validation or state errors */}
+      {/* Error message display for validation failures */}
       {errorMsg && (
         <Text color="red.400" fontSize="sm" mb={2}>{errorMsg}</Text>
       )}
       
-      {/* Sector input controls: Color picker + label + add button */}
+      {/* Horizontal input layout: color picker + text field + action button */}
       <HStack spacing={2} mb={4}>
-        {/* HTML5 color input: Ensures valid color values */}
+        {/* HTML5 color input: Returns valid hex color values */}
         <Input
           type="color"
           value={colorInput}
@@ -54,10 +49,10 @@ export function AddSectorControls({
           bg="none"
           cursor="pointer"
           borderRadius="md"
-          isDisabled={isSpinning || winner} // Protected during critical states
+          isDisabled={isSpinning || winner} // State protection during operations
         />
         
-        {/* Optional text label for sector identification */}
+        {/* Text input for sector labeling (optional) */}
         <Input
           placeholder="Etiqueta (opcional)"
           value={labelInput}
@@ -65,12 +60,12 @@ export function AddSectorControls({
           isDisabled={isSpinning || winner} // Consistent state protection
         />
         
-        {/* Add action: Commits both color and label atomically */}
+        {/* Add button: Triggers atomic sector creation */}
         <Button
           colorScheme="green"
           onClick={onAddColor}
           isDisabled={isSpinning || winner}
-          opacity={isSpinning || winner ? 0.6 : 1} // Visual state feedback
+          opacity={isSpinning || winner ? 0.6 : 1} // Visual state indicator
           cursor={isSpinning || winner ? "not-allowed" : "pointer"}
         >
           Añadir

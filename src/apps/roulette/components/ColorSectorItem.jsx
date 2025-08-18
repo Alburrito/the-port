@@ -3,22 +3,17 @@ import { Box, Text, Button, Input, SimpleGrid, HStack, Dialog, Portal } from "@c
 import { EditIcon, RemoveIcon } from "./icons";
 
 /**
- * ColorSectorItem Component
+ * Individual sector management component with modal editing
  * 
- * Represents an individual roulette sector with inline editing capabilities.
- * This component encapsulates complex state management for sector modifications
- * while maintaining data integrity through validation and conflict prevention.
+ * Handles single roulette sector display and modification operations.
+ * Modal-based editing system with validation and conflict detection.
+ * State protection prevents modifications during spinning/winner states.
  * 
- * Key Features:
- * - Modal-based editing to prevent accidental changes
- * - Duplicate detection for both colors and labels
- * - State protection during critical operations (spinning/winner states)
- * - Optimistic UI updates with rollback on validation failure
- * 
- * Validation Strategy:
- * - Duplicate checking across all sectors
- * - Error state management with user feedback
- * - Atomic save operations to prevent partial updates
+ * Features:
+ * - Modal edit interface for color and label changes
+ * - Duplicate validation across sector array
+ * - Atomic save operations with error handling
+ * - State-based disable logic for operation protection
  */
 export function ColorSectorItem({ item, idx, onRemove, colors, setColors, isSpinning, winner }) {
   // Local state for modal editing with validation

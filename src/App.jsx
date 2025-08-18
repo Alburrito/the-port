@@ -13,16 +13,22 @@ import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPort
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 import { useAppLoader } from "@/hooks/useAppLoader.js";
 
+/**
+ * Dynamic component loader for individual apps
+ * Handles route parameter extraction and component lazy loading
+ * Implements loading states and error boundaries
+ */
 function AppLoader() {
-  const { appId } = useParams();
+  const { appId } = useParams(); // Extract app identifier from URL path
   const { component: Component, config, loading, error } = useAppLoader(appId);
 
+  // Loading state with spinner component
   if (loading) {
     return <LoadingSpinner message="Cargando app..." />;
   }
 
+  // Error state differentiation: not found vs loading errors
   if (error) {
-    // Check if it's a "not found" error vs other loading errors
     if (error.includes("not found")) {
       return <AppNotFound appId={appId} />;
     } else {
@@ -30,11 +36,13 @@ function AppLoader() {
     }
   }
 
+  // Config validation before rendering
   if (!config) {
     return <AppNotFound appId={appId} />;
   }
 
-  // Render the component once it's loaded
+  // Component rendering with layout structure
+  // Fixed header with back navigation + flexible content area
   return (
     <Box minH="100vh" maxH="100vh" display="flex" flexDirection="column">
       <Box 
@@ -53,18 +61,25 @@ function AppLoader() {
   );
 }
 
+/**
+ * Main application component - routing orchestrator and app registry
+ * Manages app configuration loading and route-based navigation
+ * Implements landing page with dynamic app grid generation
+ */
 export default function App() {
-  const [apps, setApps] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [apps, setApps] = React.useState([]); // App configuration registry
+  const [loading, setLoading] = React.useState(true); // Initial load state
 
+  // Configuration loading on mount
+  // Loads app metadata only (configs), not component code
   React.useEffect(() => {
-    // Only load app configurations at startup (small and fast)
     loadAppConfigs().then((loadedApps) => {
       setApps(loadedApps);
       setLoading(false);
     });
   }, []);
 
+  // Global loading state for initial app discovery
   if (loading) {
     return <LoadingSpinner message="Cargando El Puerto..." />;
   }
@@ -72,6 +87,7 @@ export default function App() {
   return (
     <>
       <Routes>
+        {/* Landing page route - app discovery interface */}
         <Route
           path="/"
           element={
@@ -90,14 +106,15 @@ export default function App() {
                 </Text>
               </VStack>
 
+              {/* Dynamic app grid generation from configuration registry */}
               <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
                 {apps.map(({ id, name, color, icon }) => {
-                  const IconComponent = icon;
+                  const IconComponent = icon; // Component reference from config
                   return (
                     <Button
                       key={id}
                       as={Link}
-                      to={`/app/${id}`}
+                      to={`/app/${id}`} // Route to app-specific path
                       size="lg"
                       colorPalette={color}
                     >
@@ -110,9 +127,10 @@ export default function App() {
           }
         />
 
+        {/* Dynamic app routing with parameter extraction */}
         <Route path="/app/:appId" element={<AppLoader />} />
         
-        {/* Catch-all route for 404 pages */}
+        {/* Fallback route for unmatched paths */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>

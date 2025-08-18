@@ -2,30 +2,24 @@ import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
 /**
- * RouletteWheel Component
+ * SVG-based roulette wheel with CSS animation
  * 
- * Renders an interactive SVG-based roulette wheel with the following key features:
- * - Dynamic sector generation based on color array
- * - CSS animation support for smooth spinning transitions
- * - Responsive design that scales across different screen sizes
- * - Polar coordinate mathematics for precise sector path calculations
+ * Renders dynamic sector wheel using polar coordinate mathematics.
+ * CSS transform animation provides smooth rotation transitions.
+ * Responsive SVG scales across screen sizes with trigonometric sector calculations.
  * 
- * The wheel uses SVG path elements to create pie-slice sectors, with each sector
- * calculated using trigonometric functions to ensure perfect circular distribution.
- * 
- * @param {Array} colors - Array of color objects with {color, label} properties
- * @param {boolean} isSpinning - Controls whether animation CSS is applied
- * @param {number} rotation - Current rotation angle in degrees (accumulated across spins)
- * @param {number} animationDuration - Duration of spin animation in seconds
+ * @param {Array} colors - Color objects array with {color, label} properties
+ * @param {boolean} isSpinning - Animation state control
+ * @param {number} rotation - Accumulated rotation degrees
+ * @param {number} animationDuration - Animation duration in seconds
  */
 export function RouletteWheel({ colors, isSpinning, rotation, animationDuration }) {
-  // SVG coordinate system constants
-  // These define the center point and radius for all geometric calculations
+  // SVG coordinate constants for geometric calculations
   const radius = 180;
   const centerX = 200;
   const centerY = 200;
   
-  // Empty state: Show placeholder when no sectors are configured
+  // Empty state placeholder when no sectors configured
   if (colors.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px">

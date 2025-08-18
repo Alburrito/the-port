@@ -70,11 +70,11 @@ export default function RouletteApp({ backButtonHeightVh }) {
     
     // Validate uniqueness to prevent user confusion
     if (labelInput && colors.some(item => item.label === labelInput)) {
-      setErrorMsg("Duplicate label");
+      setErrorMsg("Etiqueta duplicada");
       return;
     }
     if (colors.some(item => item.color === colorInput)) {
-      setErrorMsg("Duplicate color");
+      setErrorMsg("Color duplicado");
       return;
     }
     

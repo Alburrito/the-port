@@ -4,28 +4,19 @@ import { Box, Text, Separator } from "@chakra-ui/react";
 /**
  * AppHeader Component
  * 
- * Renders the application title with decorative separators for the text-to-color app.
- * This component establishes visual hierarchy and branding while maintaining
- * consistency with the app's dark theme design language.
+ * Static header component rendering application title with decorative separators.
+ * No state management or user interactions.
  * 
- * Design Philosophy:
- * - Centered layout creates balanced composition
- * - Separator elements provide clear content boundaries
- * - Bold typography establishes app identity
- * - Consistent spacing maintains visual rhythm
- * 
- * Visual Strategy:
- * - White text on dark background for high contrast
- * - Large font size ensures readability and prominence
- * - Separators frame the title for emphasis
- * - Responsive design adapts to different screen sizes
+ * Implementation:
+ * - Fixed layout with centered text alignment
+ * - Uses Chakra UI Text and Separator components
+ * - Static content with no props or dynamic behavior
  */
 export function AppHeader() {
   return (
     <>
       <Separator my={4} />
 
-      {/* Main application title with centered alignment */}
       <Box textAlign="center">
         <Text fontSize="3xl" fontWeight="bold" color="white">
           Texto a Color

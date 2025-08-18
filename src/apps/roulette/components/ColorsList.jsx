@@ -3,21 +3,17 @@ import { Box, Text, SimpleGrid } from "@chakra-ui/react";
 import { ColorSectorItem } from "./ColorSectorItem";
 
 /**
- * ColorsList Component
+ * Sector list container with grid layout
  * 
- * Renders a scrollable grid of roulette sectors with management capabilities.
- * This component provides visual feedback for the current roulette configuration
- * and enables sector-level operations like editing and removal.
+ * Renders scrollable grid of roulette sectors with management operations.
+ * Responsive 2-column layout with height constraints and overflow scrolling.
+ * Delegates sector operations to child components while maintaining state consistency.
  * 
- * Layout Strategy:
- * - Responsive grid layout (2 columns) for optimal space utilization
- * - Constrained height with scrolling to prevent interface overflow
- * - Empty state messaging to guide initial user setup
- * 
- * State Management:
- * - Delegates individual sector operations to child components
- * - Maintains consistent disabled state during critical operations
- * - Preserves sector order through index-based key management
+ * Layout implementation:
+ * - Fixed width container with responsive breakpoints
+ * - Constrained height (300px) with auto-scroll overflow
+ * - Grid system for sector organization
+ * - Empty state handling with instructional message
  */
 export function ColorsList({ colors, setColors, onRemoveColor, isSpinning, winner }) {
   return (

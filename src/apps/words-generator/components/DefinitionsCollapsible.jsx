@@ -2,32 +2,14 @@ import React from "react";
 import { Box, Text, VStack, Collapsible } from "@chakra-ui/react";
 
 /**
- * DefinitionsCollapsible Component
+ * Expandable definitions container with custom scrollbar
  * 
- * Manages the expandable definitions section with custom scrollbar styling.
- * This component implements a space-efficient approach to displaying detailed
- * word definitions, allowing users to focus on the word initially while
- * providing easy access to comprehensive information.
+ * Collapsible component for word definitions with space-efficient design.
+ * Custom scrollbar styling using WebKit CSS properties.
+ * unmountOnExit optimization for DOM performance when collapsed.
  * 
- * UX Strategy:
- * - Collapsed by default to reduce cognitive load
- * - Toggle mechanism with clear visual indicators
- * - Scrollable content area prevents interface overflow
- * - Custom scrollbar styling maintains theme consistency
- * 
- * Scrollbar Customization:
- * - WebKit-specific styling for modern browsers
- * - Semi-transparent scrollbar elements blend with theme
- * - Hover states provide interactive feedback
- * - Graceful degradation for unsupported browsers
- * 
- * Performance Considerations:
- * - unmountOnExit optimizes DOM when collapsed
- * - CSS-in-JS styling isolated to component scope
- * - Minimal re-renders through controlled state
- * 
- * @param {Object} currentWord - Word object containing definitions array
- * @param {boolean} showDefinitions - Toggle state for definitions visibility
+ * @param {Object} currentWord - Word object with definitions array
+ * @param {boolean} showDefinitions - Expansion state control
  * @param {Function} setShowDefinitions - State setter for toggle control
  * @param {Object} colorScheme - Current color theme object with bg/text properties
  */

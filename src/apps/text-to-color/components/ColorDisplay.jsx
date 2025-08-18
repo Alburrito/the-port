@@ -4,33 +4,15 @@ import { Box, Text } from "@chakra-ui/react";
 /**
  * ColorDisplay Component
  * 
- * Renders the generated color preview with interactive copy functionality.
- * This component serves as the primary output mechanism, displaying both
- * visual and textual representations of the computed color value.
- * 
- * Core Features:
- * - Visual color preview as prominent square/rectangle
- * - Hex color code display with copy-to-clipboard functionality
- * - Responsive sizing across different screen breakpoints
- * - Interactive hover effects for enhanced user experience
- * 
- * Interaction Design:
- * - Click-to-copy functionality on both color box and hex text
- * - Hover animations provide immediate visual feedback
- * - Scale transformation creates engaging micro-interaction
- * - Border color changes indicate interactive elements
+ * Interactive color preview box with clipboard functionality.
+ * Displays generated color with hex value and copy feedback.
  * 
  * Technical Implementation:
- * - Clipboard API integration for modern browsers
- * - Responsive breakpoint system for optimal sizing
- * - CSS transitions for smooth animations
- * - User-selectable text for accessibility
- * 
- * Accessibility Considerations:
- * - Keyboard accessible through click handlers
- * - High contrast hex text for readability
- * - Clear visual boundaries with border styling
- * - Semantic structure for screen reader support
+ * - Click handler triggers clipboard API
+ * - Conditional rendering for copy feedback state
+ * - Responsive sizing with breakpoint system
+ * - Dynamic background color from boxColor prop
+ * - CSS hover transform effects
  * 
  * @param {string} boxColor - Generated hex color value
  * @param {Function} onBoxClick - Click handler for copy functionality
@@ -40,7 +22,7 @@ export function ColorDisplay({ boxColor, onBoxClick, copied }) {
   return (
     <Box flex="1" display="flex" justifyContent="center" p={10}>
       <Box display="flex" flexDirection="column" alignItems="center">
-        {/* Interactive color preview box with responsive sizing */}
+        {/* Color preview box with responsive sizing */}
         <Box
           w={{ base: "200px", md: "280px", lg: "350px", xl: "400px" }}
           h={{ base: "200px", md: "280px", lg: "350px", xl: "400px" }}
@@ -73,7 +55,7 @@ export function ColorDisplay({ boxColor, onBoxClick, copied }) {
             onClick={onBoxClick}
           >
             {boxColor.toUpperCase()}
-            {/* Temporary success feedback for copy operation */}
+            {/* Copy operation feedback */}
             {copied && (
               <Text as="span" fontSize="md" color="green.300" ml={2}>
                 ¡Copiado!

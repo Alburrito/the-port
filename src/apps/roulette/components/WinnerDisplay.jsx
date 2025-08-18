@@ -2,30 +2,27 @@ import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
 /**
- * WinnerDisplay Component
+ * Winner result announcement component
  * 
- * Renders celebratory announcement when a roulette winner is determined.
- * This component provides clear visual feedback with prominent styling
- * to highlight the winning result and create a satisfying conclusion
- * to the spinning experience.
- * 
- * Conditional rendering: Only displays when winner exists
+ * Conditional rendering component for displaying roulette results.
+ * Shows winner information with color preview and label text.
+ * Only renders when winner object exists (non-null).
  */
 export function WinnerDisplay({ winner }) {
   // Guard clause: Only render when winner is determined
   if (!winner) return null;
 
   return (
-    /* Celebratory container with green success theme */
+    /* Result container with success styling */
     <Box textAlign="center" mb={4} p={4} bg="green.50" borderRadius="lg" border="2px solid" borderColor="green.200">
-      {/* Prominent celebration heading */}
+      {/* Winner announcement heading */}
       <Text fontSize="2xl" fontWeight="bold" color="green.600" mb={2}>
         🎉 ¡Ganador! 🎉
       </Text>
       
-      {/* Winner identification with color preview and label */}
+      {/* Winner details: color indicator + label text */}
       <Box display="flex" alignItems="center" justifyContent="center" gap={3}>
-        {/* Color indicator matching the winning sector */}
+        {/* Color preview circle matching winning sector */}
         <Box w="32px" h="32px" borderRadius="full" bg={winner.color} border="3px solid white" boxShadow="lg" />
         
         {/* Winner label with fallback to color value */}

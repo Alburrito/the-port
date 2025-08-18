@@ -4,27 +4,18 @@ import { Box, Textarea } from "@chakra-ui/react";
 /**
  * TextInput Component
  * 
- * Provides the primary input mechanism for text-to-color conversion.
- * This component handles user text input with real-time color generation,
- * featuring responsive design and accessibility considerations.
+ * Auto-resizing textarea for text input with real-time color generation trigger.
+ * Handles text input changes and forwards them to parent component.
  * 
- * UX Design:
- * - Auto-resizing textarea adapts to content length
- * - Centered layout focuses attention on input
- * - Placeholder text guides user interaction
- * - Focus states provide clear visual feedback
+ * Technical Features:
+ * - autoresize property handles dynamic height adjustment
+ * - maxH="30vh" prevents excessive vertical growth
+ * - Centered layout with constrained maximum width (500px)
+ * - Dark theme integration with semi-transparent background
  * 
- * Styling Strategy:
- * - Semi-transparent background integrates with dark theme
- * - White text maintains readability
- * - Smooth transitions enhance perceived responsiveness
- * - Constrained height prevents interface overflow
- * 
- * Accessibility Features:
- * - Large font size improves readability
- * - High contrast ratios meet WCAG guidelines
- * - Semantic textarea element for screen readers
- * - Keyboard navigation fully supported
+ * State Management:
+ * - Controlled component receiving value and onChange from parent
+ * - No local state, forwards all changes immediately
  * 
  * @param {string} inputText - Current text input value
  * @param {Function} onInputChange - Callback for text changes
@@ -32,7 +23,7 @@ import { Box, Textarea } from "@chakra-ui/react";
 export function TextInput({ inputText, onInputChange }) {
   return (
     <Box>
-      {/* Auto-resizing textarea with theme-consistent styling */}
+      {/* Auto-resizing textarea with theme styling */}
       <Textarea
         value={inputText}
         onChange={onInputChange}

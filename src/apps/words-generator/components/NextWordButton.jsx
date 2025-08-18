@@ -2,26 +2,13 @@ import React from "react";
 import { Box, Button } from "@chakra-ui/react";
 
 /**
- * NextWordButton Component
+ * Word generation trigger button
  * 
- * Provides the primary interaction mechanism for word generation.
- * This component triggers the core functionality of fetching new words
- * with accompanying color scheme changes for enhanced visual variety.
+ * Primary action button for generating new word with color scheme changes.
+ * Implements theme-consistent styling with alpha-based hover effects.
  * 
- * Interaction Design:
- * - Prominent placement at bottom of interface
- * - Clear action labeling ("Siguiente") 
- * - Hover states provide immediate feedback
- * - Theme-consistent styling maintains visual harmony
- * 
- * Styling Strategy:
- * - Semi-transparent background integrates with any color scheme
- * - Alpha-based hover effects work across all themes
- * - Bold typography emphasizes primary action
- * - Large size ensures accessibility and ease of use
- * 
- * @param {Function} onNextWord - Callback function to generate new word and theme
- * @param {Object} colorScheme - Current color theme object with bg/text properties
+ * @param {Function} onNextWord - Callback for word generation and theme update
+ * @param {Object} colorScheme - Color theme with bg/text properties
  */
 export function NextWordButton({ onNextWord, colorScheme }) {
   return (

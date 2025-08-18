@@ -5,32 +5,24 @@ import { AppHeader, TextInput, ColorDisplay } from "./components";
 /**
  * TextToColorApp - Main Application Component
  * 
- * A creative utility application that converts any text input into a unique color
- * through deterministic ASCII-based algorithm.
+ * Converts text input into deterministic color values using ASCII-based algorithm.
+ * Manages application state and coordinates component interactions.
  * 
- * Core Functionality:
- * - Real-time text-to-color conversion using ASCII value computation
- * - Interactive color preview with click-to-copy functionality
- * - Responsive design optimized for various screen sizes
- * - Instant visual feedback for user interactions
- * 
- * Algorithm Strategy:
+ * Algorithm Implementation:
  * - ASCII value summation for deterministic color generation
  * - Mathematical transformation ensures reproducible results
  * - Hexadecimal conversion creates valid CSS color values
- * - Multiplier constant provides good color distribution
+ * - Multiplier constant (1234567) provides good color distribution
  * 
- * UX Design Philosophy:
- * - Dark theme reduces eye strain and emphasizes color output
- * - Centered layout focuses attention on primary functionality
- * - Minimal interface reduces cognitive load
- * - Immediate feedback enhances perceived responsiveness
+ * State Management:
+ * - inputText: Current text input value
+ * - boxColor: Generated hex color string
+ * - copied: Temporary feedback state for clipboard operations
  * 
- * Technical Features:
- * - Modern Clipboard API for seamless copy operations
- * - Component architecture for maintainable code structure
- * - Responsive breakpoint system for device compatibility
- * - Efficient state management with minimal re-renders
+ * Component Architecture:
+ * - AppHeader: Static title and separators
+ * - TextInput: Real-time input processing
+ * - ColorDisplay: Color preview and clipboard interaction
  * 
  * @param {number} backButtonHeightVh - Height reserved for navigation button
  */
@@ -46,27 +38,22 @@ export default function TextToColorApp({ backButtonHeightVh }) {
   /**
    * Text-to-Color Conversion Algorithm
    * 
-   * Implements a deterministic color generation system based on ASCII character values.
-   * This algorithm ensures that identical text inputs always produce the same color output,
-   * creating a consistent and predictable user experience.
+   * Deterministic color generation based on ASCII character values.
+   * Same input text always produces identical color output.
    * 
    * Mathematical Process:
-   * 1. Convert each character to its ASCII numeric value
-   * 2. Sum all ASCII values to create a unique text signature
+   * 1. Convert each character to ASCII numeric value
+   * 2. Sum all ASCII values to create unique text signature
    * 3. Apply mathematical transformation with large multiplier
    * 4. Use modulo operation to constrain within valid color range
    * 5. Convert to hexadecimal and pad to ensure 6-character format
    * 
-   * Algorithm Benefits:
-   * - Deterministic: Same input always produces same output
-   * - Distributed: Good spread across color spectrum
-   * - Fast: O(n) time complexity where n is text length
-   * - Collision-resistant: Different texts rarely produce same color
+   * Technical Constants:
+   * - Multiplier (1234567): Chosen for good distribution properties
+   * - Modulo (16777215): Maximum RGB value (0xFFFFFF)
+   * - PadStart: Ensures consistent 6-digit hex format
    * 
-   * Technical Details:
-   * - Multiplier (1234567) chosen for good distribution properties
-   * - Modulo (16777215) represents maximum RGB value (0xFFFFFF)
-   * - PadStart ensures consistent 6-digit hex format
+   * Performance: O(n) time complexity where n = text length
    * 
    * @param {string} text - Input text to convert to color
    * @returns {string} Hex color code in format #RRGGBB
@@ -81,13 +68,12 @@ export default function TextToColorApp({ backButtonHeightVh }) {
    * Input Change Handler
    * 
    * Processes text input changes and triggers real-time color generation.
-   * This function demonstrates the reactive nature of the application,
-   * providing immediate visual feedback as users type.
+   * Updates both text state and computed color on each keystroke.
    * 
-   * Performance Optimization:
+   * Implementation Notes:
    * - Single state update per input change
-   * - Efficient color calculation on each keystroke
-   * - No debouncing needed due to fast algorithm
+   * - Synchronous color calculation (no async overhead)
+   * - No debouncing required due to fast algorithm performance
    * 
    * @param {Event} e - Input change event from textarea
    */
@@ -99,20 +85,14 @@ export default function TextToColorApp({ backButtonHeightVh }) {
   /**
    * Copy-to-Clipboard Handler
    * 
-   * Implements modern clipboard functionality with user feedback.
-   * Uses the Clipboard API for secure, asynchronous copying with
-   * visual confirmation through temporary state changes.
+   * Implements clipboard functionality using modern Clipboard API.
+   * Provides temporary visual feedback for successful copy operations.
    * 
-   * UX Strategy:
-   * - Immediate feedback through state change
-   * - Temporary success message (1.2 seconds)
-   * - Available on both color box and hex text
-   * - Graceful fallback for unsupported browsers
-   * 
-   * Browser Compatibility:
-   * - Modern browsers with Clipboard API support
-   * - HTTPS required for security compliance
-   * - Graceful degradation in unsupported environments
+   * Implementation Details:
+   * - Uses navigator.clipboard.writeText() for secure copying
+   * - Temporary state change for 1.2 second feedback display
+   * - Requires HTTPS for security compliance
+   * - No fallback for unsupported browsers
    */
   function handleBoxClick() {
     navigator.clipboard.writeText(boxColor);
@@ -121,7 +101,7 @@ export default function TextToColorApp({ backButtonHeightVh }) {
   }
 
   return (
-    /* Main application container with full-height dark theme layout */
+    // Main application container with fixed height and dark background
     <Box 
       minH={availableHeight}
       maxH={availableHeight}
@@ -131,21 +111,17 @@ export default function TextToColorApp({ backButtonHeightVh }) {
       justifyContent="center"
       px={4}
       overflow="hidden"
-      bg="#2D3748" // Dark slate background for modern aesthetic
+      bg="#2D3748"
       color="white"
     >
-      {/* Application header with branding */}
       <AppHeader />
-      
-      {/* Main content area with flexible layout */}
+
       <Box textAlign="center" flex="1" display="flex" flexDirection="column" minH="0">
-        {/* Text input section */}
         <TextInput 
           inputText={inputText}
           onInputChange={handleInputChange}
         />
         
-        {/* Color display and interaction section */}
         <ColorDisplay
           boxColor={boxColor}
           onBoxClick={handleBoxClick}

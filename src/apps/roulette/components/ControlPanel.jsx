@@ -5,21 +5,15 @@ import { SpinDurationSlider } from "./SpinDurationSlider";
 import { ActionButtons } from "./ActionButtons";
 
 /**
- * ControlPanel Component
+ * User interface orchestration component
  * 
- * Orchestrates the user interface for roulette configuration and interaction.
- * This component acts as a composition layer that organizes three main control areas:
- * 1. Sector management (adding colors/labels)
- * 2. Spin duration configuration  
- * 3. Action buttons (spin, cancel, reset)
+ * Composition layer organizing three control areas:
+ * 1. Sector management (color/label input)
+ * 2. Duration configuration (slider control)  
+ * 3. Action buttons (spin/cancel/reset)
  * 
- * The component implements conditional rendering based on application state
- * to provide contextual UI that guides users through the roulette workflow.
- * 
- * State Management Pattern:
- * - Receives all state through props (no local state)
- * - Delegates state mutations to parent through callback functions
- * - Implements prop drilling architecture for centralized state control
+ * Implements stateless prop drilling architecture with conditional rendering
+ * based on application state. All state management delegated to parent component.
  */
 export function ControlPanel({ 
   colorInput, 
