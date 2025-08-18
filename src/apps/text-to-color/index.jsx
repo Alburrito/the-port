@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { AppHeader, TextInput, ColorDisplay } from "./components";
+import { TextInput, ColorDisplay } from "./components";
+import { AppHeader } from "@/components/AppHeader";
 
 /**
  * TextToColorApp - Main Application Component
@@ -114,7 +115,7 @@ export default function TextToColorApp({ backButtonHeightVh }) {
       bg="#2D3748"
       color="white"
     >
-      <AppHeader />
+      <AppHeader title="Texto a Color" />
 
       <Box textAlign="center" flex="1" display="flex" flexDirection="column" minH="0">
         <TextInput 

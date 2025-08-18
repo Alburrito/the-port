@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import wordsData from "./words.json";
-import { getRandomDifferentIndex } from "../../utils/randomUtils.js";
+import { getRandomDifferentIndex } from "@/utils/randomUtils.js";
 import { 
-  AppHeader, 
   WordDisplay, 
   DefinitionsCollapsible, 
   NextWordButton 
 } from "./components";
+import { AppHeader } from "@/components/AppHeader";
 
 /**
  * WordsGeneratorApp - Main Application Component
@@ -115,7 +115,7 @@ export default function WordsGeneratorApp({ backButtonHeightVh }) {
       overflow="hidden"
     >
       {/* Application header with branding and navigation */}
-      <AppHeader colorScheme={currentColorScheme} />
+      <AppHeader title="Generador de Palabras" colorScheme={currentColorScheme} />
         
       {/* Main content area with flexible layout and word display */}
       <Box 

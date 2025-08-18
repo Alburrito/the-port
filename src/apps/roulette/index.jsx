@@ -1,9 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
-import { RouletteWheel } from "./components/RouletteWheel";
-import { WinnerDisplay } from "./components/WinnerDisplay";
-import { ColorsList } from "./components/ColorsList";
-import { ControlPanel } from "./components/ControlPanel";
+import { RouletteWheel, WinnerDisplay, ColorsList, ControlPanel } from "./components";
 
 /**
  * Roulette App - Main container managing all state and business logic
