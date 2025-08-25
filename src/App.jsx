@@ -5,12 +5,13 @@ import {
   Button,
   SimpleGrid,
   Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { loadAppConfigs } from "@/utils/loadApps.js";
 import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
 import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPortButton.jsx";
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
+import { SearchBar } from "@/components/SearchBar.jsx";
 import { useAppLoader } from "@/hooks/useAppLoader.js";
 
 /**
@@ -68,7 +69,53 @@ function AppLoader() {
  */
 export default function App() {
   const [apps, setApps] = React.useState([]); // App configuration registry
+  const [filteredApps, setFilteredApps] = React.useState([]); // Filtered and sorted apps
   const [loading, setLoading] = React.useState(true); // Initial load state
+  const [searchValue, setSearchValue] = React.useState(""); // Search input state
+  const [currentSort, setCurrentSort] = React.useState({ // Estado del orden actual
+    sortBy: "dateAdded",
+    sortOrder: "desc"
+  });
+
+  // Helper function to apply search and sorting
+  const applyFiltersAndSort = React.useCallback((searchTerm, sortConfig) => {
+    let result = [...apps];
+
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter(app => 
+        app.name.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sortConfig.sortBy) {
+        case "dateAdded":
+          aValue = new Date(a.dateAdded || 0);
+          bValue = new Date(b.dateAdded || 0);
+          return bValue - aValue; // Descending
+        case "lastUpdated":
+          aValue = new Date(a.lastUpdated || 0);
+          bValue = new Date(b.lastUpdated || 0);
+          return bValue - aValue; // Descending
+        case "name":
+        default:
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          if (sortConfig.sortOrder === "desc") {
+            return bValue.localeCompare(aValue);
+          } else {
+            return aValue.localeCompare(bValue);
+          }
+      }
+    });
+
+    setFilteredApps(result);
+  }, [apps]);
 
   // Configuration loading on mount
   // Loads app metadata only (configs), not component code
@@ -78,6 +125,29 @@ export default function App() {
       setLoading(false);
     });
   }, []);
+
+  // Apply initial sort when apps are loaded
+  React.useEffect(() => {
+    if (apps.length > 0) {
+      applyFiltersAndSort(searchValue, currentSort);
+    }
+  }, [apps, applyFiltersAndSort, searchValue, currentSort]);
+
+  // Handle search changes
+  const handleSearchChange = React.useCallback((searchTerm) => {
+    setSearchValue(searchTerm);
+    applyFiltersAndSort(searchTerm, currentSort);
+  }, [applyFiltersAndSort, currentSort]);
+
+  // Handle filter changes
+  const handleFiltersChange = React.useCallback((filters) => {
+    const newSortConfig = {
+      sortBy: filters.sortBy,
+      sortOrder: filters.sortBy === "name" ? "asc" : "desc"
+    };
+    setCurrentSort(newSortConfig);
+    applyFiltersAndSort(searchValue, newSortConfig);
+  }, [applyFiltersAndSort, searchValue]);
 
   // Global loading state for initial app discovery
   if (loading) {
@@ -106,9 +176,16 @@ export default function App() {
                 </Text>
               </VStack>
 
+              <SearchBar 
+                onSearchChange={handleSearchChange} 
+                onFiltersChange={handleFiltersChange}
+                searchValue={searchValue} 
+                hasActiveFilters={false} // Por ahora, solo el orden no cuenta como filtro activo
+              />
+
               {/* Dynamic app grid generation from configuration registry */}
               <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
-                {apps.map(({ id, name, color, icon }) => {
+                {filteredApps.map(({ id, name, color, icon }) => {
                   const IconComponent = icon; // Component reference from config
                   return (
                     <Button
