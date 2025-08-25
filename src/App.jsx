@@ -76,9 +76,12 @@ export default function App() {
     sortBy: "dateAdded",
     sortOrder: "desc"
   });
+  const [currentStatusFilter, setCurrentStatusFilter] = React.useState(["active", "archived"]); // Estado del filtro de estado
+  const [currentPlatformFilter, setCurrentPlatformFilter] = React.useState(["mobile", "tablet", "desktop"]); // Estado del filtro de plataforma
+  const [currentCategoryFilter, setCurrentCategoryFilter] = React.useState(["tools", "games", "education", "media", "music", "development"]); // Estado del filtro de categoría
 
   // Helper function to apply search and sorting
-  const applyFiltersAndSort = React.useCallback((searchTerm, sortConfig) => {
+  const applyFiltersAndSort = React.useCallback((searchTerm, sortConfig, statusFilter = ["active", "archived"], platformFilter = ["mobile", "tablet", "desktop"], categoryFilter = ["tools", "games", "education", "media", "music", "development"]) => {
     let result = [...apps];
 
     // Apply search filter
@@ -86,6 +89,27 @@ export default function App() {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(app => 
         app.name.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter && statusFilter.length > 0) {
+      result = result.filter(app => 
+        statusFilter.includes(app.status)
+      );
+    }
+
+    // Apply platform filter
+    if (platformFilter && platformFilter.length > 0) {
+      result = result.filter(app => 
+        app.platforms && app.platforms.some(platform => platformFilter.includes(platform))
+      );
+    }
+
+    // Apply category filter
+    if (categoryFilter && categoryFilter.length > 0) {
+      result = result.filter(app => 
+        app.categories && app.categories.some(category => categoryFilter.includes(category))
       );
     }
 
@@ -129,15 +153,15 @@ export default function App() {
   // Apply initial sort when apps are loaded
   React.useEffect(() => {
     if (apps.length > 0) {
-      applyFiltersAndSort(searchValue, currentSort);
+      applyFiltersAndSort(searchValue, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter);
     }
-  }, [apps, applyFiltersAndSort, searchValue, currentSort]);
+  }, [apps, applyFiltersAndSort, searchValue, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter]);
 
   // Handle search changes
   const handleSearchChange = React.useCallback((searchTerm) => {
     setSearchValue(searchTerm);
-    applyFiltersAndSort(searchTerm, currentSort);
-  }, [applyFiltersAndSort, currentSort]);
+    applyFiltersAndSort(searchTerm, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter);
+  }, [applyFiltersAndSort, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter]);
 
   // Handle filter changes
   const handleFiltersChange = React.useCallback((filters) => {
@@ -146,7 +170,10 @@ export default function App() {
       sortOrder: filters.sortBy === "name" ? "asc" : "desc"
     };
     setCurrentSort(newSortConfig);
-    applyFiltersAndSort(searchValue, newSortConfig);
+    setCurrentStatusFilter(filters.status || ["active", "archived"]);
+    setCurrentPlatformFilter(filters.platforms || ["mobile", "tablet", "desktop"]);
+    setCurrentCategoryFilter(filters.categories || ["tools", "games", "education", "media", "music", "development"]);
+    applyFiltersAndSort(searchValue, newSortConfig, filters.status || ["active", "archived"], filters.platforms || ["mobile", "tablet", "desktop"], filters.categories || ["tools", "games", "education", "media", "music", "development"]);
   }, [applyFiltersAndSort, searchValue]);
 
   // Global loading state for initial app discovery

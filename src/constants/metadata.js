@@ -1,12 +1,19 @@
+import { FiTool, FiBook, FiImage, FiMusic, FiCode } from "react-icons/fi";
+
 // Allowed categories for apps
 export const APP_CATEGORIES = [
-  "tools",
-  "games",
+  { value: "tools", label: "Herramientas", icon: FiTool },
+  { value: "games", label: "Juegos", icon: FiBook },
+  { value: "education", label: "Educación", icon: FiBook },
+  { value: "media", label: "Media", icon: FiImage },
+  { value: "music", label: "Música", icon: FiMusic },
+  { value: "development", label: "Desarrollo", icon: FiCode },
 ];
 
 // Supported platforms
 export const APP_PLATFORMS = [
   "mobile",
+  "tablet",
   "desktop",
 ];
 
