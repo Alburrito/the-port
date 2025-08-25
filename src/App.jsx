@@ -13,6 +13,7 @@ import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPort
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 import { SearchBar } from "@/components/SearchBar.jsx";
 import { useAppLoader } from "@/hooks/useAppLoader.js";
+import { useDeviceDetection } from "@/hooks/useDeviceDetection.js";
 
 /**
  * Dynamic component loader for individual apps
@@ -68,17 +69,44 @@ function AppLoader() {
  * Implements landing page with dynamic app grid generation
  */
 export default function App() {
-  const [apps, setApps] = React.useState([]); // App configuration registry
-  const [filteredApps, setFilteredApps] = React.useState([]); // Filtered and sorted apps
-  const [loading, setLoading] = React.useState(true); // Initial load state
-  const [searchValue, setSearchValue] = React.useState(""); // Search input state
-  const [currentSort, setCurrentSort] = React.useState({ // Estado del orden actual
+  // Real device detection using User Agent and device capabilities
+  const detectedDevice = useDeviceDetection();
+
+  const getDefaultPlatforms = React.useCallback(() => {
+    const platform = detectedDevice || "desktop";
+    switch (platform) {
+      case "mobile":
+        return ["mobile"];
+      case "tablet": 
+        return ["tablet"];
+      case "desktop":
+        return ["desktop"];
+      default:
+        return ["desktop"];
+    }
+  }, [detectedDevice]);
+
+  const [apps, setApps] = React.useState([]);
+  const [filteredApps, setFilteredApps] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [searchValue, setSearchValue] = React.useState("");
+  const [currentSort, setCurrentSort] = React.useState({
     sortBy: "dateAdded",
     sortOrder: "desc"
   });
-  const [currentStatusFilter, setCurrentStatusFilter] = React.useState(["active", "archived"]); // Estado del filtro de estado
-  const [currentPlatformFilter, setCurrentPlatformFilter] = React.useState(["mobile", "tablet", "desktop"]); // Estado del filtro de plataforma
-  const [currentCategoryFilter, setCurrentCategoryFilter] = React.useState(["tools", "games", "education", "media", "music", "development"]); // Estado del filtro de categoría
+  const [currentStatusFilter, setCurrentStatusFilter] = React.useState(["active", "archived"]);
+  const [currentPlatformFilter, setCurrentPlatformFilter] = React.useState(["mobile", "tablet", "desktop"]);
+  const [currentCategoryFilter, setCurrentCategoryFilter] = React.useState(["tools", "games", "education", "media", "music", "development"]);
+  const [hasAppliedDeviceDetection, setHasAppliedDeviceDetection] = React.useState(false);
+
+  // Apply device detection when platform is detected (only once)
+  React.useEffect(() => {
+    if (detectedDevice && !hasAppliedDeviceDetection) {
+      const defaultPlatforms = getDefaultPlatforms();
+      setCurrentPlatformFilter(defaultPlatforms);
+      setHasAppliedDeviceDetection(true);
+    }
+  }, [detectedDevice, hasAppliedDeviceDetection, getDefaultPlatforms]);
 
   // Helper function to apply search and sorting
   const applyFiltersAndSort = React.useCallback((searchTerm, sortConfig, statusFilter = ["active", "archived"], platformFilter = ["mobile", "tablet", "desktop"], categoryFilter = ["tools", "games", "education", "media", "music", "development"]) => {
@@ -171,10 +199,22 @@ export default function App() {
     };
     setCurrentSort(newSortConfig);
     setCurrentStatusFilter(filters.status || ["active", "archived"]);
-    setCurrentPlatformFilter(filters.platforms || ["mobile", "tablet", "desktop"]);
+    
+    // Use device detection when no platforms selected
+    const platformsToUse = (filters.platforms && filters.platforms.length > 0) 
+      ? filters.platforms 
+      : getDefaultPlatforms();
+    setCurrentPlatformFilter(platformsToUse);
+    
     setCurrentCategoryFilter(filters.categories || ["tools", "games", "education", "media", "music", "development"]);
-    applyFiltersAndSort(searchValue, newSortConfig, filters.status || ["active", "archived"], filters.platforms || ["mobile", "tablet", "desktop"], filters.categories || ["tools", "games", "education", "media", "music", "development"]);
-  }, [applyFiltersAndSort, searchValue]);
+    applyFiltersAndSort(
+      searchValue, 
+      newSortConfig, 
+      filters.status || ["active", "archived"], 
+      platformsToUse, 
+      filters.categories || ["tools", "games", "education", "media", "music", "development"]
+    );
+  }, [applyFiltersAndSort, searchValue, getDefaultPlatforms]);
 
   // Global loading state for initial app discovery
   if (loading) {
@@ -207,7 +247,10 @@ export default function App() {
                 onSearchChange={handleSearchChange} 
                 onFiltersChange={handleFiltersChange}
                 searchValue={searchValue} 
-                hasActiveFilters={false} // Por ahora, solo el orden no cuenta como filtro activo
+                currentPlatforms={currentPlatformFilter}
+                currentStatus={currentStatusFilter}
+                currentCategories={currentCategoryFilter}
+                currentSort={currentSort.sortBy}
               />
 
               {/* Dynamic app grid generation from configuration registry */}

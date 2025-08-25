@@ -1,8 +1,27 @@
 #!/bin/bash
 
-# Script to create a new application in The Port
-# Usage: ./create-app.sh <app-id>
-# Example: ./create-app.sh my-new-app
+# Script to create a new app in The Port
+# Usage: ./create-app.sh <app# Create config.js file
+print_message "⚙️  Creating config.js..." "$YELLOW"
+cat > "$APP_DIR/config.js" << EOF
+import { MdApps } from "react-icons/md";
+
+export const config = {
+  id: "$APP_ID",
+  name: "$APP_NAME", // TODO: Change to a better display name
+  description: "A new app for The Port", // TODO: Add meaningful description
+  categories: ["tools"], // Available: tools, games, education, media, music, development
+  dateAdded: "$(date -I)",
+  lastUpdated: "$(date -I)",
+  author: "ajburri", // TODO: Change to your name
+  isFeatured: false,
+  platforms: ["mobile", "tablet", "desktop"], // Supported platforms  
+  version: "1.0.0",
+  status: "beta", // active, beta, archived, maintenance
+  color: "teal", // Available: red, teal, blue, green, orange, purple, pink, yellow, gray
+  icon: MdApps // TODO: Change to appropriate icon from react-icons/md
+};
+EOFmple: ./create-app.sh my-calculator
 
 set -e  # Exit on any error
 
@@ -20,13 +39,15 @@ print_message() {
 
 # Function to show help
 show_help() {
-    echo "Usage: $0 <app-id>"
+    echo "Usage: $0 <app-name>"
     echo ""
-    echo "Creates a new application in The Port with the complete structure:"
-    echo "  - Application folder"
-    echo "  - index.jsx file with template"
-    echo "  - config.js file with configuration"
-    echo "  - components folder with index.js"
+    echo "🚀 Creates a new application in The Port with:"
+    echo "  • Application folder in src/apps/"
+    echo "  • index.jsx with modern React component template"
+    echo "  • config.js with complete metadata configuration"
+    echo "  • components/ folder with sample component"
+    echo "  • Automatic device detection support"
+    echo "  • Ready-to-use filtering and categorization"
     echo ""
     echo "Example:"
     echo "  $0 calculator"
@@ -95,27 +116,59 @@ EOF
 # Create index.jsx file
 print_message "📄 Creating index.jsx..." "$YELLOW"
 cat > "$APP_DIR/index.jsx" << 'EOF'
-import React, { useState } from "react";
-import { Box } from "@chakra-ui/react";
-import { AppHeader } from "@/components/AppHeader";
+import React from "react";
+import { Box, Text, Button, VStack } from "@chakra-ui/react";
+import { AppHeader } from "@/components/AppHeader.jsx";
 
 /**
  * APP_COMPONENT_NAME - Main Application Component
  * 
  * TODO: Describe what this application does and its main purpose.
  * 
- * Key Features:
- * - TODO: List main features
- * - TODO: Add more features
- * - TODO: Include any special functionality
- * 
- * State Management:
- * - TODO: Describe main state variables
- * - TODO: Add state descriptions
- * 
- * Component Architecture:
- * - AppHeader: Reusable header with application title
- * - TODO: Add other components as they are created
+ * @param {number} backButtonHeightVh - Height of the back button in viewport units
+ */
+export default function APP_COMPONENT_NAME({ backButtonHeightVh }) {
+  const [counter, setCounter] = React.useState(0);
+
+  return (
+    <Box 
+      minH="100vh" 
+      bg="gray.50" 
+      pt={\`\${backButtonHeightVh}vh\`}
+      overflow="auto"
+    >
+      <AppHeader 
+        title="APP_TITLE"
+        colorScheme={{ text: "gray.800" }}
+      />
+      
+      <Box p={6} textAlign="center">
+        <VStack spacing={4}>
+          <Text fontSize="xl" color="gray.700">
+            Welcome to your new app!
+          </Text>
+          
+          <Text fontSize="4xl" fontWeight="bold" color="teal.500">
+            {counter}
+          </Text>
+          
+          <Button 
+            onClick={() => setCounter(counter + 1)}
+            colorPalette="teal"
+            size="lg"
+          >
+            Click me!
+          </Button>
+          
+          <Text fontSize="sm" color="gray.500" mt={4}>
+            Edit src/apps/APP_ID/index.jsx to customize this app
+          </Text>
+        </VStack>
+      </Box>
+    </Box>
+  );
+}
+EOF
  * 
  * Technical Implementation:
  * - TODO: Describe any algorithms or special logic
@@ -179,9 +232,60 @@ EOF
 
 # Replace placeholders in index.jsx
 sed -i "s/APP_COMPONENT_NAME/$COMPONENT_NAME/g" "$APP_DIR/index.jsx"
-sed -i "s/APP_DISPLAY_NAME/$APP_NAME/g" "$APP_DIR/index.jsx"
+sed -i "s/APP_TITLE/$APP_NAME/g" "$APP_DIR/index.jsx"
+sed -i "s/APP_ID/$APP_ID/g" "$APP_DIR/index.jsx"
 
-# Create components/index.js file
+# Create components folder and sample component
+print_message "🧩 Creating components..." "$YELLOW"
+mkdir -p "$APP_DIR/components"
+
+cat > "$APP_DIR/components/SampleComponent.jsx" << 'EOF'
+import React from "react";
+import { Box, Text } from "@chakra-ui/react";
+
+export function SampleComponent({ title = "Sample Component" }) {
+  return (
+    <Box 
+      p={4} 
+      borderRadius="md" 
+      bg="white" 
+      shadow="sm"
+      border="1px solid"
+      borderColor="gray.200"
+    >
+      <Text fontWeight="semibold" color="gray.800">
+        {title}
+      </Text>
+      <Text fontSize="sm" color="gray.600" mt={2}>
+        This is a sample component. You can import and use it in your main app.
+      </Text>
+    </Box>
+  );
+}
+EOF
+
+# Create components index.js for easier imports
+cat > "$APP_DIR/components/index.js" << 'EOF'
+export { SampleComponent } from "./SampleComponent.jsx";
+EOF
+
+# Success message
+print_message "" "$NC"
+print_message "✅ App '$APP_ID' created successfully!" "$GREEN"
+print_message "" "$NC"
+print_message "📁 Files created:" "$BLUE"
+print_message "  • $APP_DIR/config.js" "$NC"
+print_message "  • $APP_DIR/index.jsx" "$NC" 
+print_message "  • $APP_DIR/components/SampleComponent.jsx" "$NC"
+print_message "  • $APP_DIR/components/index.js" "$NC"
+print_message "" "$NC"
+print_message "🛠️  Next steps:" "$YELLOW"
+print_message "  1. Edit $APP_DIR/config.js to customize metadata" "$NC"
+print_message "  2. Edit $APP_DIR/index.jsx to build your interface" "$NC"
+print_message "  3. Add components to $APP_DIR/components/ as needed" "$NC"
+print_message "  4. Your app will be at http://localhost:5173/app/$APP_ID" "$NC"
+print_message "" "$NC"
+print_message "🎯 Happy coding!" "$GREEN"
 print_message "🧩 Creating components/index.js..." "$YELLOW"
 cat > "$APP_DIR/components/index.js" << EOF
 // Components barrel export for $APP_ID app

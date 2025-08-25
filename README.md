@@ -1,163 +1,170 @@
-# The Port - Technical Documentation
+# The Port
 
-## Architecture Overview
+Application hub with React Router and dynamic component loading.
 
-### Router-Based Application Hub
-Multi-app container using React Router for navigation and dynamic component loading. Implements lazy loading pattern for performance optimization and modular app management.
+## What is this?
 
-### Core Components
+A webpage that contains multiple mini-applications. Each app lives in `src/apps/[name]/` and loads dynamically when you navigate to `/app/name`.
 
-```
-App.jsx                 # Main router + landing page
-├── AppLoader()         # Dynamic component loader
-├── Landing Page        # App discovery interface
-└── Error Boundaries    # Route-level error handling
-```
+### Main features:
+- **Smart filters**: By category, platform, and status
+- **Device detection**: Automatically selects the appropriate platform (mobile/tablet/desktop)
+- **Real-time search**: Find apps by name
+- **On-demand loading**: Only loads code when you need it
 
-## Dynamic Loading System
+## Tech Stack
 
-### Configuration-Based App Registry
-```javascript
-// App discovery process
-1. loadAppConfigs() → App metadata loading
-2. Dynamic import() → Component lazy loading on demand
-3. Error boundaries → Loading failure handling
-```
-
-### Loading Phases
-| Phase | Trigger | Data Loaded | Performance Impact |
-|-------|---------|-------------|-------------------|
-| Initial | App mount | Config files only | Minimal (metadata) |
-| Navigation | Route change | Component code | Single app loading |
-| Error | Load failure | Error components | Graceful degradation |
-
-### Error Recovery System
-- **Graceful Degradation**: Error pages with navigation
-- **Back Navigation**: Always available return path
-- **Error Context**: Specific error information display
-- **State Isolation**: App errors don't affect router state
-
-## Routing Architecture
-
-### Route Structure
-```
-/                   → Landing page (app grid)
-/app/:appId         → Dynamic app loader
-/*                  → 404 fallback
-```
-
-### Parameter Flow
-```javascript
-URL: /app/roulette
-  ↓
-useParams() → { appId: "roulette" }
-  ↓
-useAppLoader(appId) → Component loading
-  ↓
-<Component /> → App rendering
-```
-
-## Component Loading Hook
-
-### useAppLoader Implementation
-```javascript
-// State management for async loading
-const [loading, setLoading] = useState(true);
-const [component, setComponent] = useState(null);
-const [config, setConfig] = useState(null);
-const [error, setError] = useState(null);
-
-// TODO: Explain hook functionality
-```
-
-### Error Classification System
-- **Not Found**: App ID doesn't exist in registry
-- **Load Error**: Import failure or component error
-- **Config Error**: Missing or invalid configuration
-
-## Layout System
-
-### Viewport Management
-```javascript
-// Full viewport layout with flexbox
-minH="100vh" maxH="100vh" display="flex" flexDirection="column"
-
-// Fixed header + flexible content
-├── Header (fixed height)     # Navigation bar
-└── Content (flex: 1)         # App rendering area
-```
-
-### Back Navigation Integration
-```javascript
-// Consistent header across all apps
-<BackToPortButton />
-// Height constant passed to apps
-<Component backButtonHeightVh={BACK_BUTTON_HEIGHT_VH} />
-```
-
-## State Management
-
-### App Registry State
-```javascript
-const [apps, setApps] = useState([]);      // Configuration array
-const [loading, setLoading] = useState(true); // Initial load state
-```
-
-### Configuration Structure
-```javascript
-{
-  id: string,        // Unique identifier for routing
-  name: string,      // Display name for UI
-  color: string,     // Chakra UI color palette
-  icon: Component    // React component reference
-}
-```
+- **React 19** + **React Router 7**
+- **Chakra UI 3** for components
+- **Vite 7** for development and build
 
 ## File Structure
 
 ```
 src/
-├── App.jsx                    # Main application component
-├── main.jsx                   # Application entry point
-├── apps/                      # Individual applications
-│   └── *
-├── components/                # Shared components
-│   ├── BackToPortButton.jsx   # Navigation component
-│   ├── ErrorPages.jsx         # Error boundary components
-│   ├── LoadingSpinner.jsx     # Loading state component
-│   └── provider.jsx           # Theme/context providers
-├── hooks/                     # Custom React hooks
-│   └── useAppLoader.js        # Dynamic loading hook
-└── utils/                     # Utility functions
-    ├── loadApps.js            # App configuration loader
-    └── randomUtils.js         # Shared random utilities
+├── App.jsx                     # Main router + filter logic
+├── main.jsx                    # Entry point
+├── apps/                       # 👈 All applications go here
+│   └── [app-name]/
+│       ├── index.jsx           # Main component
+│       ├── config.js           # Configuration and metadata
+│       └── components/         # App-specific components
+├── components/                 # Shared components
+├── hooks/                      # Custom hooks
+├── utils/                      # Utilities
+└── create-app.sh              # 👈 Script to create new apps
 ```
 
-## Technology Stack
+## Create a New App
 
-### Core Dependencies
-- **React 19**: Component system + hooks
-- **React Router 7**: SPA routing
-- **Chakra UI 3**: Component library + theming
-- **Vite 7**: Build system + dev server
+### Option 1: Automatic script (recommended)
 
-### Build Configuration
-```javascript
-// TODO: when build is ready
+```bash
+# Give permissions (first time only)
+chmod +x create-app.sh
+
+# Create app
+./create-app.sh calculator
 ```
 
-## Development Workflow
+This generates:
+- `src/apps/calculator/index.jsx`
+- `src/apps/calculator/config.js` 
+- `src/apps/calculator/components/`
 
-### Adding New Apps
-1. Create app directory in `src/apps/`
-2. Implement `index.jsx` with default export
-3. Add configuration in `config.js`
+### Option 2: Manual
 
-### Component Requirements
+1. Create folder in `src/apps/my-app/`
+2. Create `index.jsx` with the main component
+3. Create `config.js` with configuration
+4. (Optional) Create `components/` for internal components
+
+## App Configuration
+
+Each app needs a `config.js`:
+
 ```javascript
-// Required app component interface
-export default function AppComponent({ backButtonHeightVh }) {
-  // App implementation with height consideration
-  // for fixed header layout
+import { MdCalculate } from "react-icons/md";
+
+export const config = {
+  id: "calculator",                     // Unique ID (kebab-case)
+  name: "Calculator",                   // Display name
+  description: "Basic calculator",      // Brief description
+  categories: ["tools"],                // Available categories below
+  dateAdded: "2025-08-25",             // Creation date
+  lastUpdated: "2025-08-25",           // Last update
+  author: "ajburri",                   // Your name
+  isFeatured: false,                   // Featured app
+  platforms: ["mobile", "tablet", "desktop"], // Supported platforms
+  version: "1.0.0",                    // Semantic version
+  status: "beta",                      // Available statuses below
+  color: "teal",                       // Theme color
+  icon: MdCalculate                    // Icon from react-icons/md
+};
+```
+
+### Available categories:
+- `tools` - Tools
+- `games` - Games  
+- `education` - Education
+- `media` - Multimedia
+- `music` - Music
+- `development` - Development
+
+### Available statuses:
+- `active` - Production ready
+- `beta` - In testing
+- `archived` - Archived/deprecated
+- `maintenance` - Under maintenance
+
+## Main Component Structure
+
+Your `index.jsx` must export a function by default:
+
+```javascript
+export default function MyApp({ backButtonHeightVh }) {
+  return (
+    <Box 
+      minH="100vh" 
+      pt={`${backButtonHeightVh}vh`}  // Space for the back button
+      overflow="auto"
+    >
+      {/* Your interface here */}
+    </Box>
+  );
 }
 ```
+
+## Filter System
+
+Filtering works automatically based on each app's configuration:
+
+### Device detection
+- **Mobile**: Automatically filters apps with `mobile` support
+- **Tablets**: Automatically filters apps with `tablet` support  
+- **Desktop**: Automatically filters apps with `desktop` support
+
+### Available filters
+- **Search**: By app name
+- **Category**: tools, games, education, etc.
+- **Platform**: mobile, tablet, desktop
+- **Status**: active, beta, archived, maintenance
+
+## How It Works Internally
+
+1. **Initial load**: Reads all `config.js` from `src/apps/`
+2. **Navigation**: Going to `/app/name` dynamically imports the component
+3. **Filters**: Applied in real-time over loaded metadata
+4. **Error handling**: If something fails, shows an error page
+
+## Useful Commands
+
+```bash
+# Development
+npm run dev
+
+# Development with access from other devices
+npm run dev:host
+
+# Production build  
+npm run build
+
+# Linting
+npm run lint
+```
+
+## Development Notes
+
+- App IDs must be unique and in kebab-case format
+- Apps are completely independent from each other
+- Routing is handled automatically
+- Errors in one app don't affect the rest
+- You can use any additional library within a specific app
+
+## If you come back in 2 years...
+
+1. **To add an app**: Use `./create-app.sh app-name`
+2. **To modify filters**: Look in `App.jsx` 
+3. **To change device detection**: Check `hooks/useDeviceDetection.js`
+4. **To understand an existing app**: Review its `config.js` first
+5. **If something breaks**: Apps are isolated, the problem will be in its specific folder

@@ -17,20 +17,31 @@ export function SearchBar({
   onSearchChange, 
   onFiltersChange,
   searchValue = "", 
-  hasActiveFilters = false,
-  placeholder = "Buscar apps..." 
+  placeholder = "Buscar apps...",
+  currentPlatforms = ["mobile", "tablet", "desktop"],
+  currentStatus = ["active", "archived"],
+  currentCategories = ["tools", "games", "education", "media", "music", "development"],
+  currentSort = "dateAdded"
 }) {
   // Applied filters state - persists until user changes them
-  const [appliedSortBy, setAppliedSortBy] = React.useState("dateAdded");
-  const [appliedStatus, setAppliedStatus] = React.useState(["active", "archived"]);
-  const [appliedPlatforms, setAppliedPlatforms] = React.useState(["mobile", "tablet", "desktop"]);
-  const [appliedCategories, setAppliedCategories] = React.useState(["tools", "games", "education", "media", "music", "development"]);
+  const [appliedSortBy, setAppliedSortBy] = React.useState(currentSort);
+  const [appliedStatus, setAppliedStatus] = React.useState(currentStatus);
+  const [appliedPlatforms, setAppliedPlatforms] = React.useState(currentPlatforms);
+  const [appliedCategories, setAppliedCategories] = React.useState(currentCategories);
+
+  // Sync with parent state when it changes (for device detection)
+  React.useEffect(() => {
+    setAppliedSortBy(currentSort);
+    setAppliedStatus(currentStatus);
+    setAppliedPlatforms(currentPlatforms);
+    setAppliedCategories(currentCategories);
+  }, [currentPlatforms, currentStatus, currentCategories, currentSort]);
   
   // Temporary filters state - reverted on cancel, applied on confirm
-  const [tempSortBy, setTempSortBy] = React.useState("dateAdded");
-  const [tempStatus, setTempStatus] = React.useState(["active", "archived"]);
-  const [tempPlatforms, setTempPlatforms] = React.useState(["mobile", "tablet", "desktop"]);
-  const [tempCategories, setTempCategories] = React.useState(["tools", "games", "education", "media", "music", "development"]);
+  const [tempSortBy, setTempSortBy] = React.useState(currentSort);
+  const [tempStatus, setTempStatus] = React.useState(currentStatus);
+  const [tempPlatforms, setTempPlatforms] = React.useState(currentPlatforms);
+  const [tempCategories, setTempCategories] = React.useState(currentCategories);
   
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
 
@@ -53,6 +64,7 @@ export function SearchBar({
       const newPlatforms = current.includes(platformValue)
         ? current.filter(p => p !== platformValue)
         : [...current, platformValue];
+      // Fallback to mobile if no platforms remain
       return newPlatforms.length === 0 ? ["mobile"] : newPlatforms;
     });
   };
@@ -122,8 +134,8 @@ export function SearchBar({
         {/* Filter button trigger */}
         <IconButton
           aria-label="Filtros"
-          variant={hasActiveFilters ? "solid" : "outline"}
-          colorPalette={hasActiveFilters ? "teal" : "gray"}
+          variant="outline"
+          colorPalette="gray"
           size="sm"
           position="absolute"
           right={searchValue ? "12" : "2"}
@@ -131,13 +143,13 @@ export function SearchBar({
           transform="translateY(-50%)"
           zIndex={1}
           border="0px"
-          borderColor={hasActiveFilters ? "teal.500" : "gray.300"}
-          bg={hasActiveFilters ? "teal.500" : "white"}
-          color={hasActiveFilters ? "white" : "gray.600"}
+          borderColor="gray.300"
+          bg="white"
+          color="gray.600"
           onClick={() => setIsFiltersOpen(true)}
           _hover={{
-            bg: hasActiveFilters ? "teal.600" : "gray.100",
-            borderColor: hasActiveFilters ? "teal.600" : "gray.400"
+            bg: "gray.100",
+            borderColor: "gray.400"
           }}
         >
           <FiFilter />
