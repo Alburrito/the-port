@@ -1,18 +1,79 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-    Button,
-    Dialog,
-    Portal,
-    CloseButton,
-    Separator,
-    VStack,
-    Text,
-    HStack,
-    Icon
+  Dialog,
+  Portal,
+  CloseButton,
+  VStack,
+  Text,
+  HStack,
+  Icon,
+  Button,
+  SimpleGrid
 } from "@chakra-ui/react";
-import { FiClock, FiEdit, FiType } from "react-icons/fi";
+import { FiClock, FiEdit, FiType, FiCheck, FiArchive, FiTool, FiSmartphone, FiTablet, FiMonitor } from "react-icons/fi";
+import { APP_CATEGORIES } from "@/constants/metadata.js";
 
-// Componente reutilizable para los botones de ordenación
+const StatusButton = ({ value, isSelected, icon, text, colorScheme = "teal", onClick }) => (
+  <Button
+    onClick={() => onClick(value)}
+    variant={isSelected ? "solid" : "outline"}
+    colorPalette={isSelected ? colorScheme : "gray"}
+    cursor="pointer" 
+    flex="1"
+    px={3}
+    py={2}
+    h="auto"
+    borderRadius="md"
+    transition="all 0.2s"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+  >
+    <HStack spacing={2}>
+      <Icon as={icon} color={isSelected ? "white" : `${colorScheme}.500`} size="sm" />
+      <Text 
+        fontSize={{ base: "2xs", sm: "sm" }}
+        fontWeight={isSelected ? "semibold" : "normal"}
+        color={isSelected ? "white" : `${colorScheme}.600`}
+        lineHeight="tight"
+      >
+        {text}
+      </Text>
+    </HStack>
+  </Button>
+);
+
+const CategoryButton = ({ value, isSelected, icon, text, colorScheme = "teal", onClick }) => (
+  <Button
+    onClick={() => onClick(value)}
+    variant={isSelected ? "solid" : "outline"}
+    colorPalette={isSelected ? colorScheme : "gray"}
+    cursor="pointer" 
+    width="full"
+    px={2}
+    py={2}
+    h="auto"
+    borderRadius="md"
+    transition="all 0.2s"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    size="sm"
+  >
+    <HStack spacing={1}>
+      <Icon as={icon} color={isSelected ? "white" : `${colorScheme}.500`} size="xs" />
+      <Text 
+        fontSize={{ base: "2xs", sm: "xs" }}
+        fontWeight={isSelected ? "semibold" : "normal"}
+        color={isSelected ? "white" : `${colorScheme}.600`}
+        lineHeight="tight"
+      >
+        {text}
+      </Text>
+    </HStack>
+  </Button>
+);
+
 const SortButton = ({ value, isSelected, icon, text, colorScheme = "teal", onClick }) => (
   <Button
     onClick={() => onClick(value)}
@@ -20,148 +81,195 @@ const SortButton = ({ value, isSelected, icon, text, colorScheme = "teal", onCli
     colorPalette={isSelected ? colorScheme : "gray"}
     cursor="pointer" 
     flex="1"
-    p={3} 
-    minH="20"
+    px={3}
+    py={2}
+    h="auto"
     borderRadius="md"
     transition="all 0.2s"
     display="flex"
     alignItems="center"
     justifyContent="center"
   >
-    <VStack spacing={1}>
-      <Icon as={icon} color={isSelected ? "white" : `${colorScheme}.500`} size="lg" />
+    <HStack spacing={2}>
+      <Icon as={icon} color={isSelected ? "white" : `${colorScheme}.500`} size="sm" />
       <Text 
-        fontSize="xs" 
+        fontSize={{ base: "2xs", sm: "sm" }}
         fontWeight={isSelected ? "semibold" : "normal"}
         color={isSelected ? "white" : `${colorScheme}.600`}
-        textAlign="center"
         lineHeight="tight"
       >
         {text}
       </Text>
-    </VStack>
+    </HStack>
   </Button>
 );
 
-export function Filters({ onFiltersChange, ...props }) {
-    // Suponiendo que recibes una prop llamada "hasActiveFilters"
-    const { hasActiveFilters = false } = props;
-    
-    // Estado actual de los filtros aplicados
-    const [appliedSortBy, setAppliedSortBy] = useState("dateAdded");
-    // Estado temporal para el modal (se revierte al cancelar)
-    const [tempSortBy, setTempSortBy] = useState("dateAdded");
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Al abrir el modal, sincronizar el estado temporal con el aplicado
-    const handleOpenChange = (details) => {
-        if (details.open) {
-            setTempSortBy(appliedSortBy);
-        }
-        setIsOpen(details.open);
-    };
-
-    // Al cancelar, revertir el estado temporal
-    const handleCancel = () => {
-        setTempSortBy(appliedSortBy);
-        setIsOpen(false);
-    };
-
-    // Aplicar filtros solo al confirmar
-    const handleApplyFilters = () => {
-        const filters = {
-            sortBy: tempSortBy,
-            sortOrder: tempSortBy === "name" ? "asc" : "desc"
-        };
-        setAppliedSortBy(tempSortBy); // Actualizar el estado aplicado
-        onFiltersChange?.(filters);
-        setIsOpen(false);
-    };
-
-    return (
-      <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
-        <Dialog.Trigger asChild>
-          <Button
-            variant={hasActiveFilters ? "solid" : "outline"}
-            colorPalette={hasActiveFilters ? "teal" : "gray"}
-            size="sm"
-          >
-            Filtros
-          </Button>
-        </Dialog.Trigger>
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content>
-              <Dialog.Header>
-                <Dialog.Title>Filtros</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                <VStack spacing={4} align="stretch">
-                  <div>
-                    <Text fontWeight="semibold" mb={3} color="gray.700">
-                      Ordenar por
-                    </Text>
-                    <HStack spacing={2} width="full">
-                      <SortButton
-                        value="dateAdded"
-                        isSelected={tempSortBy === "dateAdded"}
-                        icon={FiClock}
-                        text="Reciente"
+/**
+ * Filters Component - Modal dialog for advanced filtering and sorting
+ * Manages temporary state until user confirms or cancels changes
+ */
+export function Filters({
+  isOpen,
+  onOpenChange,
+  tempSortBy,
+  setTempSortBy,
+  tempStatus,
+  handleStatusToggle,
+  tempPlatforms,
+  handlePlatformToggle,
+  tempCategories,
+  handleCategoryToggle,
+  onApply,
+  onCancel
+}) {
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Filtros</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              <VStack spacing={6} align="stretch">
+                <div>
+                  <Text fontWeight="semibold" mb={3} color="gray.700">
+                    Ordenar por
+                  </Text>
+                  <HStack spacing={2} width="full">
+                    <SortButton
+                      value="dateAdded"
+                      isSelected={tempSortBy === "dateAdded"}
+                      icon={FiClock}
+                      text="Reciente"
+                      colorScheme="teal"
+                      onClick={setTempSortBy}
+                    />
+                    <SortButton
+                      value="lastUpdated"
+                      isSelected={tempSortBy === "lastUpdated"}
+                      icon={FiEdit}
+                      text="Actualizado"
+                      colorScheme="blue"
+                      onClick={setTempSortBy}
+                    />
+                    <SortButton
+                      value="name"
+                      isSelected={tempSortBy === "name"}
+                      icon={FiType}
+                      text="A-Z"
+                      colorScheme="purple"
+                      onClick={setTempSortBy}
+                    />
+                  </HStack>
+                </div>
+                
+                <div>
+                  <Text fontWeight="semibold" mb={3} color="gray.700">
+                    Estado
+                  </Text>
+                  <HStack spacing={2} width="full">
+                    <StatusButton
+                      value="active"
+                      isSelected={tempStatus.includes("active")}
+                      icon={FiCheck}
+                      text="Activa"
+                      colorScheme="green"
+                      onClick={handleStatusToggle}
+                    />
+                    <StatusButton
+                      value="archived"
+                      isSelected={tempStatus.includes("archived")}
+                      icon={FiArchive}
+                      text="Archivada"
+                      colorScheme="orange"
+                      onClick={handleStatusToggle}
+                    />
+                    <StatusButton
+                      value="beta"
+                      isSelected={tempStatus.includes("beta")}
+                      icon={FiTool}
+                      text="Beta"
+                      colorScheme="blue"
+                      onClick={handleStatusToggle}
+                    />
+                  </HStack>
+                </div>
+                
+                <div>
+                  <Text fontWeight="semibold" mb={3} color="gray.700">
+                    Plataforma
+                  </Text>
+                  <HStack spacing={2} width="full">
+                    <StatusButton
+                      value="mobile"
+                      isSelected={tempPlatforms.includes("mobile")}
+                      icon={FiSmartphone}
+                      text="Mobile"
+                      colorScheme="indigo"
+                      onClick={handlePlatformToggle}
+                    />
+                    <StatusButton
+                      value="tablet"
+                      isSelected={tempPlatforms.includes("tablet")}
+                      icon={FiTablet}
+                      text="Tablet"
+                      colorScheme="cyan"
+                      onClick={handlePlatformToggle}
+                    />
+                    <StatusButton
+                      value="desktop"
+                      isSelected={tempPlatforms.includes("desktop")}
+                      icon={FiMonitor}
+                      text="Desktop"
+                      colorScheme="purple"
+                      onClick={handlePlatformToggle}
+                    />
+                  </HStack>
+                </div>
+                
+                <div>
+                  <Text fontWeight="semibold" mb={3} color="gray.700">
+                    Categorías
+                  </Text>
+                  <SimpleGrid columns={3} gap={1} width="full">
+                    {APP_CATEGORIES.map((category) => (
+                      <CategoryButton
+                        key={category.value}
+                        value={category.value}
+                        isSelected={tempCategories.includes(category.value)}
+                        icon={category.icon}
+                        text={category.label}
                         colorScheme="teal"
-                        onClick={setTempSortBy}
+                        onClick={handleCategoryToggle}
                       />
-                      <SortButton
-                        value="lastUpdated"
-                        isSelected={tempSortBy === "lastUpdated"}
-                        icon={FiEdit}
-                        text="Actualizado"
-                        colorScheme="blue"
-                        onClick={setTempSortBy}
-                      />
-                      <SortButton
-                        value="name"
-                        isSelected={tempSortBy === "name"}
-                        icon={FiType}
-                        text="A-Z"
-                        colorScheme="purple"
-                        onClick={setTempSortBy}
-                      />
-                    </HStack>
-                  </div>
-
-                  <Separator />
-                  
-                  <Text fontSize="sm" color="gray.500">
-                    Estado: Activas, Archivadas (multiselect) - Botón todas
-                  </Text>
-                  <Separator />
-                  <Text fontSize="sm" color="gray.500">
-                    Categorias: grid con iconitos - Botón todas
-                  </Text>
-                </VStack>
-              </Dialog.Body>
-              <Dialog.Footer>
-                <HStack spacing={3}>
-                  <Button variant="outline" onClick={handleCancel}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleApplyFilters} colorPalette="teal">
-                    Guardar
-                  </Button>
-                </HStack>
-              </Dialog.Footer>
-              <Dialog.CloseTrigger asChild>
-                <CloseButton
-                  position="absolute"
-                  top="2"
-                  insetEnd="2"
-                  size="sm"
-                />
-              </Dialog.CloseTrigger>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
-    );
+                    ))}
+                  </SimpleGrid>
+                </div>
+              </VStack>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <HStack spacing={3}>
+                <Button variant="outline" onClick={onCancel}>
+                  Cancelar
+                </Button>
+                <Button onClick={onApply} colorPalette="teal">
+                  Guardar
+                </Button>
+              </HStack>
+            </Dialog.Footer>
+            <Dialog.CloseTrigger asChild>
+              <CloseButton
+                position="absolute"
+                top="2"
+                insetEnd="2"
+                size="sm"
+              />
+            </Dialog.CloseTrigger>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+  );
 }
