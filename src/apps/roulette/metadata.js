@@ -1,6 +1,6 @@
 import { MdCasino } from "react-icons/md";
 
-export const config = {
+export const metadata = {
   id: "roulette",
   name: "Ruleta",
   description: "Una ruleta interactiva para determinar un ganador.",

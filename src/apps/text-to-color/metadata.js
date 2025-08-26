@@ -1,6 +1,6 @@
 import { MdColorize } from "react-icons/md";
 
-export const config = {
+export const metadata = {
   id: "text-to-color",
   name: "Texto a Color",
   description: "Convierte un texto a un color a partir de un algoritmo.",

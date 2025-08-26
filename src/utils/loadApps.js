@@ -1,9 +1,6 @@
 // Cache glob patterns to avoid recreating them on every function call
 const metadataModules = import.meta.glob("../apps/*/metadata.js");
-const componentModules = import.meta.glob("../apps/*/index.jsx");
-
-// Simple cache for loaded apps to avoid reloading them
-const appCache = new Map();
+const appModules = import.meta.glob("../apps/*/index.jsx");
 
 // Function to load only app metadata (light for startup)
 export async function loadAppConfigs() {
@@ -12,8 +9,8 @@ export async function loadAppConfigs() {
   for (const path in metadataModules) {
     try {
       const module = await metadataModules[path]();
-      if (module.config) {
-        apps.push(module.config);
+      if (module.metadata) {
+        apps.push(module.metadata);
       }
     } catch (error) {
       console.warn(`Error loading app metadata from ${path}:`, error);
@@ -23,39 +20,29 @@ export async function loadAppConfigs() {
   return apps;
 }
 
-// Function to load a specific app (metadata + component)
+// Function to load a specific app with its metadata and component
 export async function loadApp(appId) {
-  // Check cache first
-  if (appCache.has(appId)) {
-    return appCache.get(appId);
+  const path = Object.keys(metadataModules).find(path => path.includes(`/${appId}/`));
+  
+  if (!path) {
+    throw new Error(`App ${appId} not found`);
   }
   
-  const metadataPath = `../apps/${appId}/metadata.js`;
-  const componentPath = `../apps/${appId}/index.jsx`;
-
-  // Verify that both files exist
-  if (!metadataModules[metadataPath] || !componentModules[componentPath]) {
-    throw new Error(`App "${appId}" not found or incomplete`);
-  }
-
   try {
-    // Loading both the metadata and the component
-    const [metadataModule, componentModule] = await Promise.all([
-      metadataModules[metadataPath](),
-      componentModules[componentPath]()
-    ]);
-
-    const appData = {
-      config: metadataModule.config,
-      component: componentModule.default
-    };
-
-    // Cache the result for future use
-    appCache.set(appId, appData);
+    // Load metadata
+    const metadataModule = await metadataModules[path]();
+    const metadata = metadataModule.metadata;
     
-    return appData;
+    // Load app component
+    const appPath = path.replace('/metadata.js', '/index.jsx');
+    const appModule = await appModules[appPath]();
+    
+    return {
+      metadata,
+      component: appModule.default
+    };
   } catch (error) {
-    console.error(`Error loading app "${appId}":`, error);
+    console.error(`Error loading app ${appId}:`, error);
     throw error;
   }
 }
@@ -66,5 +53,5 @@ export function appExists(appId) {
   const metadataPath = `../apps/${appId}/metadata.js`;
   const componentPath = `../apps/${appId}/index.jsx`;
 
-  return Boolean(metadataModules[metadataPath] && componentModules[componentPath]);
+  return Boolean(metadataModules[metadataPath] && appModules[componentPath]);
 }

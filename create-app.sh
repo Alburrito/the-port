@@ -83,7 +83,7 @@ print_message "⚙️  Creating metadata.js..." "$YELLOW"
 cat > "$APP_DIR/metadata.js" << EOF
 import { MdApps } from "react-icons/md";
 
-export const config = {
+export const metadata = {
   id: "$APP_ID",
   name: "$APP_NAME",
   description: "A new app for The Port", // TODO: Add meaningful description

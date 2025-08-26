@@ -5,7 +5,7 @@ import { loadApp } from "@/utils/loadApps.js";
 export function useAppLoader(appId) {
   const [state, setState] = React.useState({
     component: null,
-    config: null,
+    metadata: null,
     loading: true,
     error: null,
   });
@@ -16,7 +16,7 @@ export function useAppLoader(appId) {
     // Reset state when appId changes
     setState({
       component: null,
-      config: null,
+      metadata: null,
       loading: true,
       error: null,
     });
@@ -25,10 +25,10 @@ export function useAppLoader(appId) {
 
     // Load the app asynchronously
     loadApp(appId)
-      .then(({ config, component }) => {
+      .then(({ metadata, component }) => {
         if (!cancelled) {
           setState({
-            config,
+            metadata,
             component,
             loading: false,
             error: null,
@@ -39,7 +39,7 @@ export function useAppLoader(appId) {
         if (!cancelled) {
           setState({
             component: null,
-            config: null,
+            metadata: null,
             loading: false,
             error: error.message || `App "${appId}" no encontrada`,
           });

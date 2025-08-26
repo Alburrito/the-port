@@ -1,6 +1,6 @@
 import { MdTextFields } from "react-icons/md";
 
-export const config = {
+export const metadata = {
   id: "words-generator",
   name: "Generador de Palabras",
   description: "Genera palabras aleatorias con sus definiciones",

@@ -66,7 +66,7 @@ Each app needs a `metadata.js`:
 ```javascript
 import { MdCalculate } from "react-icons/md";
 
-export const config = {
+export const metadata = {
   id: "calculator",                     // Unique ID (kebab-case)
   name: "Calculator",                   // Display name
   description: "Basic calculator",      // Brief description

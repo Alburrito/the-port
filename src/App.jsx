@@ -8,7 +8,7 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { loadAppConfigs } from "@/utils/loadApps.js";
-import { AppNotFound, AppLoadError, PageNotFound } from "@/components/ErrorPages.jsx";
+import { AppNotFound, AppLoadError, PageNotFound, AppUnderMaintenance } from "@/components/ErrorPages.jsx";
 import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPortButton.jsx";
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 import { SearchBar } from "@/components/SearchBar.jsx";
@@ -22,7 +22,7 @@ import { useDeviceDetection } from "@/hooks/useDeviceDetection.js";
  */
 function AppLoader() {
   const { appId } = useParams(); // Extract app identifier from URL path
-  const { component: Component, config, loading, error } = useAppLoader(appId);
+  const { component: Component, metadata, loading, error } = useAppLoader(appId);
 
   // Loading state with spinner component
   if (loading) {
@@ -39,8 +39,13 @@ function AppLoader() {
   }
 
   // Config validation before rendering
-  if (!config) {
+  if (!metadata) {
     return <AppNotFound appId={appId} />;
+  }
+
+  // Check if the app is under maintenance
+  if (metadata.status === "maintenance") {
+    return <AppUnderMaintenance appId={appId} appName={metadata.name} />;
   }
 
   // Component rendering with layout structure

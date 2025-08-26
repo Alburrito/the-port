@@ -1,6 +1,6 @@
 import { MdApps } from "react-icons/md";
 
-export const config = {
+export const metadata = {
   id: "tic-tac-toe",
   name: "Tres en Raya",
   description: "Juega al clásico juego de Tres en Raya contra la IA o un oponente humano",

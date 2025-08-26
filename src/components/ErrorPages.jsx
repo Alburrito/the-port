@@ -2,6 +2,27 @@ import React from "react";
 import { Box, Text, VStack } from "@chakra-ui/react";
 import { BackToPortButton } from "./BackToPortButton.jsx";
 
+// Component for when an app is under maintenance
+export function AppUnderMaintenance({ appId, appName }) {
+  return (
+    <Box textAlign="center" mt={20}>
+      <VStack spacing={4}>
+        <Text fontSize="6xl">🔧</Text>
+        <Text fontSize="2xl" fontWeight="bold" color="yellow.500">
+          En mantenimiento
+        </Text>
+        <Text fontSize="lg" color="gray.600">
+          {appName || appId} está temporalmente fuera de servicio.
+        </Text>
+        <Text fontSize="md" color="gray.500">
+          Estamos peinándola, vuelve en un ratito.
+        </Text>
+        <BackToPortButton mt={4} />
+      </VStack>
+    </Box>
+  );
+}
+
 // Component for when an app is not found
 export function AppNotFound({ appId }) {
   return (
