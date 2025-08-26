@@ -22,7 +22,7 @@ show_help() {
     echo "🚀 Creates a new application in The Port with:"
     echo "  • Application folder in src/apps/"
     echo "  • index.jsx with modern React component template"
-    echo "  • config.js with complete metadata configuration"
+    echo "  • metadata.js with complete configuration"
     echo "  • components/ folder with sample component"
     echo "  • Automatic device detection support"
     echo "  • Ready-to-use filtering and categorization"
@@ -78,9 +78,9 @@ print_message "   Component: ${COMPONENT_NAME}App" "$BLUE"
 print_message "📁 Creating folder structure..." "$YELLOW"
 mkdir -p "$APP_DIR/components"
 
-# Create config.js file
-print_message "⚙️  Creating config.js..." "$YELLOW"
-cat > "$APP_DIR/config.js" << EOF
+# Create metadata.js file
+print_message "⚙️  Creating metadata.js..." "$YELLOW"
+cat > "$APP_DIR/metadata.js" << EOF
 import { MdApps } from "react-icons/md";
 
 export const config = {
@@ -206,13 +206,13 @@ print_message "" ""
 print_message "📋 Created structure:" "$BLUE"
 print_message "   $APP_DIR/" "$NC"
 print_message "   ├── index.jsx (main component)" "$NC"
-print_message "   ├── config.js (app configuration)" "$NC"
+print_message "   ├── metadata.js (app configuration)" "$NC"
 print_message "   └── components/" "$NC"
 print_message "       ├── SampleComponent.jsx (sample component)" "$NC"
 print_message "       └── index.js (barrel exports)" "$NC"
 print_message "" ""
 print_message "📝 Next steps:" "$YELLOW"
-print_message "1. Edit $APP_DIR/config.js to configure the icon and color" "$NC"
+print_message "1. Edit $APP_DIR/metadata.js to configure the icon and color" "$NC"
 print_message "2. Implement the logic in $APP_DIR/index.jsx" "$NC"
 print_message "3. Create components in $APP_DIR/components/ as needed" "$NC"
 print_message "4. Update $APP_DIR/components/index.js with the exports" "$NC"

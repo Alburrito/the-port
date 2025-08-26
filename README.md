@@ -27,7 +27,7 @@ src/
 ├── apps/                       # 👈 All applications go here
 │   └── [app-name]/
 │       ├── index.jsx           # Main component
-│       ├── config.js           # Configuration and metadata
+│       ├── metadata.js         # Configuration and metadata
 │       └── components/         # App-specific components
 ├── components/                 # Shared components
 ├── hooks/                      # Custom hooks
@@ -49,19 +49,19 @@ chmod +x create-app.sh
 
 This generates:
 - `src/apps/calculator/index.jsx`
-- `src/apps/calculator/config.js` 
+- `src/apps/calculator/metadata.js` 
 - `src/apps/calculator/components/`
 
 ### Option 2: Manual
 
 1. Create folder in `src/apps/my-app/`
 2. Create `index.jsx` with the main component
-3. Create `config.js` with configuration
+3. Create `metadata.js` with configuration
 4. (Optional) Create `components/` for internal components
 
 ## App Configuration
 
-Each app needs a `config.js`:
+Each app needs a `metadata.js`:
 
 ```javascript
 import { MdCalculate } from "react-icons/md";
@@ -132,7 +132,7 @@ Filtering works automatically based on each app's configuration:
 
 ## How It Works Internally
 
-1. **Initial load**: Reads all `config.js` from `src/apps/`
+1. **Initial load**: Reads all `metadata.js` from `src/apps/`
 2. **Navigation**: Going to `/app/name` dynamically imports the component
 3. **Filters**: Applied in real-time over loaded metadata
 4. **Error handling**: If something fails, shows an error page
@@ -166,5 +166,5 @@ npm run lint
 1. **To add an app**: Use `./create-app.sh app-name`
 2. **To modify filters**: Look in `App.jsx` 
 3. **To change device detection**: Check `hooks/useDeviceDetection.js`
-4. **To understand an existing app**: Review its `config.js` first
+4. **To understand an existing app**: Review its `metadata.js` first
 5. **If something breaks**: Apps are isolated, the problem will be in its specific folder
