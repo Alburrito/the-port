@@ -8,7 +8,7 @@ export const metadata = {
   dateAdded: "2025-08-26",
   lastUpdated: "2025-08-26",
   author: "ajburri",
-  isFeatured: false,
+  isFeatured: true,
   platforms: ["mobile", "tablet", "desktop"],
   version: "1.0.0",
   status: "active",

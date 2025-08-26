@@ -12,6 +12,7 @@ import { AppNotFound, AppLoadError, PageNotFound, AppUnderMaintenance } from "@/
 import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPortButton.jsx";
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 import { SearchBar } from "@/components/SearchBar.jsx";
+import { AppButton } from "@/components/AppButton.jsx";
 import { useAppLoader } from "@/hooks/useAppLoader.js";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection.js";
 
@@ -260,20 +261,16 @@ export default function App() {
 
               {/* Dynamic app grid generation from configuration registry */}
               <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={4}>
-                {filteredApps.map(({ id, name, color, icon }) => {
-                  const IconComponent = icon; // Component reference from config
-                  return (
-                    <Button
-                      key={id}
-                      as={Link}
-                      to={`/app/${id}`} // Route to app-specific path
-                      size="lg"
-                      colorPalette={color}
-                    >
-                      <IconComponent /> {name}
-                    </Button>
-                  );
-                })}
+                {filteredApps.map(({ id, name, color, icon, isFeatured }) => (
+                  <AppButton
+                    key={id}
+                    id={id}
+                    name={name}
+                    color={color}
+                    icon={icon}
+                    isFeatured={isFeatured}
+                  />
+                ))}
               </SimpleGrid>
             </Box>
           }
