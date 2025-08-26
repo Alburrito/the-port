@@ -1,28 +1,6 @@
 #!/bin/bash
 
 # Script to create a new app in The Port
-# Usage: ./create-app.sh <app# Create config.js file
-print_message "⚙️  Creating config.js..." "$YELLOW"
-cat > "$APP_DIR/config.js" << EOF
-import { MdApps } from "react-icons/md";
-
-export const config = {
-  id: "$APP_ID",
-  name: "$APP_NAME", // TODO: Change to a better display name
-  description: "A new app for The Port", // TODO: Add meaningful description
-  categories: ["tools"], // Available: tools, games, education, media, music, development
-  dateAdded: "$(date -I)",
-  lastUpdated: "$(date -I)",
-  author: "ajburri", // TODO: Change to your name
-  isFeatured: false,
-  platforms: ["mobile", "tablet", "desktop"], // Supported platforms  
-  version: "1.0.0",
-  status: "beta", // active, beta, archived, maintenance
-  color: "teal", // Available: red, teal, blue, green, orange, purple, pink, yellow, gray
-  icon: MdApps // TODO: Change to appropriate icon from react-icons/md
-};
-EOFmple: ./create-app.sh my-calculator
-
 set -e  # Exit on any error
 
 # Colors for output
@@ -108,17 +86,26 @@ import { MdApps } from "react-icons/md";
 export const config = {
   id: "$APP_ID",
   name: "$APP_NAME",
-  color: "blue", // TODO: Change to appropriate color (red, green, blue, teal, purple, etc.)
-  icon: MdApps    // TODO: Change to appropriate icon from react-icons/md
+  description: "A new app for The Port", // TODO: Add meaningful description
+  categories: ["tools"], // Available: tools, games, education, media, music, development
+  dateAdded: "$(date -I)",
+  lastUpdated: "$(date -I)",
+  author: "ajburri", // TODO: Change to your name
+  isFeatured: false,
+  platforms: ["mobile", "tablet", "desktop"], // Supported platforms  
+  version: "1.0.0",
+  status: "beta", // active, beta, archived, maintenance
+  color: "teal", // Available: red, teal, blue, green, orange, purple, pink, yellow, gray
+  icon: MdApps // TODO: Change to appropriate icon from react-icons/md
 };
 EOF
 
 # Create index.jsx file
 print_message "📄 Creating index.jsx..." "$YELLOW"
 cat > "$APP_DIR/index.jsx" << 'EOF'
-import React from "react";
+import React, { useState } from "react";
 import { Box, Text, Button, VStack } from "@chakra-ui/react";
-import { AppHeader } from "@/components/AppHeader.jsx";
+import { AppHeader } from "@/components/AppHeader";
 
 /**
  * APP_COMPONENT_NAME - Main Application Component
@@ -128,27 +115,42 @@ import { AppHeader } from "@/components/AppHeader.jsx";
  * @param {number} backButtonHeightVh - Height of the back button in viewport units
  */
 export default function APP_COMPONENT_NAME({ backButtonHeightVh }) {
-  const [counter, setCounter] = React.useState(0);
+  // TODO: Add your state management here
+  const [counter, setCounter] = useState(0);
+
+  // Calculate available height accounting for navigation
+  const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
 
   return (
     <Box 
-      minH="100vh" 
-      bg="gray.50" 
-      pt={\`\${backButtonHeightVh}vh\`}
-      overflow="auto"
+      minH={availableHeight}
+      maxH={availableHeight}
+      w="100%"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      px={4}
+      overflow="hidden"
+      bg="#2D3748"
+      color="white"
     >
-      <AppHeader 
-        title="APP_TITLE"
-        colorScheme={{ text: "gray.800" }}
-      />
-      
-      <Box p={6} textAlign="center">
+      <AppHeader title="APP_NAME" />
+
+      {/* Main content area - TODO: Replace with your components */}
+      <Box 
+        textAlign="center" 
+        flex="1" 
+        display="flex" 
+        flexDirection="column" 
+        justifyContent="center"
+        minH="0"
+      >
         <VStack spacing={4}>
-          <Text fontSize="xl" color="gray.700">
-            Welcome to your new app!
+          <Text fontSize="xl" color="gray.300">
+            Welcome to APP_ID!
           </Text>
           
-          <Text fontSize="4xl" fontWeight="bold" color="teal.500">
+          <Text fontSize="4xl" fontWeight="bold" color="teal.400">
             {counter}
           </Text>
           
@@ -169,70 +171,10 @@ export default function APP_COMPONENT_NAME({ backButtonHeightVh }) {
   );
 }
 EOF
- * 
- * Technical Implementation:
- * - TODO: Describe any algorithms or special logic
- * - TODO: Include performance considerations
- * - TODO: Note any external dependencies
- * 
- * @param {number} backButtonHeightVh - Height reserved for navigation button
- */
-export default function APP_COMPONENT_NAME({ backButtonHeightVh }) {
-  // TODO: Add state management here
-  // const [exampleState, setExampleState] = useState("");
-
-  // Calculate available height accounting for navigation
-  const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
-
-  /**
-   * TODO: Add your main business logic functions here
-   * 
-   * Example function structure:
-   * 
-   * function handleSomeAction() {
-   *   // Implementation here
-   * }
-   */
-
-  return (
-    // Main application container
-    <Box 
-      minH={availableHeight}
-      maxH={availableHeight}
-      w="100%"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      px={4}
-      overflow="hidden"
-      bg="#2D3748"  // TODO: Customize background color if needed
-      color="white"
-    >
-      <AppHeader title="APP_DISPLAY_NAME" />
-
-      {/* Main content area - TODO: Replace with your components */}
-      <Box 
-        textAlign="center" 
-        flex="1" 
-        display="flex" 
-        flexDirection="column" 
-        justifyContent="center"
-        minH="0"
-      >
-        {/* TODO: Add your application components here */}
-        <Box>
-          <p>¡Bienvenido a APP_DISPLAY_NAME!</p>
-          <p>TODO: Implement application functionality</p>
-        </Box>
-      </Box>
-    </Box>
-  );
-}
-EOF
 
 # Replace placeholders in index.jsx
 sed -i "s/APP_COMPONENT_NAME/$COMPONENT_NAME/g" "$APP_DIR/index.jsx"
-sed -i "s/APP_TITLE/$APP_NAME/g" "$APP_DIR/index.jsx"
+sed -i "s/APP_NAME/$APP_NAME/g" "$APP_DIR/index.jsx"
 sed -i "s/APP_ID/$APP_ID/g" "$APP_DIR/index.jsx"
 
 # Create components folder and sample component
@@ -243,22 +185,10 @@ cat > "$APP_DIR/components/SampleComponent.jsx" << 'EOF'
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
-export function SampleComponent({ title = "Sample Component" }) {
+export function SampleComponent() {
   return (
-    <Box 
-      p={4} 
-      borderRadius="md" 
-      bg="white" 
-      shadow="sm"
-      border="1px solid"
-      borderColor="gray.200"
-    >
-      <Text fontWeight="semibold" color="gray.800">
-        {title}
-      </Text>
-      <Text fontSize="sm" color="gray.600" mt={2}>
-        This is a sample component. You can import and use it in your main app.
-      </Text>
+    <Box p={4} bg="gray.600" borderRadius="md">
+      <Text>Sample component</Text>
     </Box>
   );
 }
@@ -272,58 +202,13 @@ EOF
 # Success message
 print_message "" "$NC"
 print_message "✅ App '$APP_ID' created successfully!" "$GREEN"
-print_message "" "$NC"
-print_message "📁 Files created:" "$BLUE"
-print_message "  • $APP_DIR/config.js" "$NC"
-print_message "  • $APP_DIR/index.jsx" "$NC" 
-print_message "  • $APP_DIR/components/SampleComponent.jsx" "$NC"
-print_message "  • $APP_DIR/components/index.js" "$NC"
-print_message "" "$NC"
-print_message "🛠️  Next steps:" "$YELLOW"
-print_message "  1. Edit $APP_DIR/config.js to customize metadata" "$NC"
-print_message "  2. Edit $APP_DIR/index.jsx to build your interface" "$NC"
-print_message "  3. Add components to $APP_DIR/components/ as needed" "$NC"
-print_message "  4. Your app will be at http://localhost:5173/app/$APP_ID" "$NC"
-print_message "" "$NC"
-print_message "🎯 Happy coding!" "$GREEN"
-print_message "🧩 Creating components/index.js..." "$YELLOW"
-cat > "$APP_DIR/components/index.js" << EOF
-// Components barrel export for $APP_ID app
-// TODO: Add component exports as you create them
-// 
-// Example:
-// export { ExampleComponent } from "./ExampleComponent";
-// export { AnotherComponent } from "./AnotherComponent";
-
-// Placeholder export to avoid empty file
-export {};
-EOF
-
-# Verify that everything was created correctly
-print_message "✅ Verifying created files..." "$YELLOW"
-
-REQUIRED_FILES=(
-    "$APP_DIR/index.jsx"
-    "$APP_DIR/config.js"
-    "$APP_DIR/components/index.js"
-)
-
-for file in "${REQUIRED_FILES[@]}"; do
-    if [ ! -f "$file" ]; then
-        print_message "❌ Error: Could not create $file" "$RED"
-        exit 1
-    fi
-done
-
-# Show final summary
-print_message "" ""
-print_message "🎉 Application '$APP_ID' created successfully!" "$GREEN"
 print_message "" ""
 print_message "📋 Created structure:" "$BLUE"
 print_message "   $APP_DIR/" "$NC"
 print_message "   ├── index.jsx (main component)" "$NC"
 print_message "   ├── config.js (app configuration)" "$NC"
 print_message "   └── components/" "$NC"
+print_message "       ├── SampleComponent.jsx (sample component)" "$NC"
 print_message "       └── index.js (barrel exports)" "$NC"
 print_message "" ""
 print_message "📝 Next steps:" "$YELLOW"
