@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { AppHeader } from "@/components/AppHeader";
-import { GameSettings } from "./components";
+import { GameSettings, SinglePlayerGame } from "./components";
 
 /**
  * ClickBattle - Main Application Component
@@ -25,7 +25,14 @@ export default function ClickBattle({ backButtonHeightVh }) {
 
   const handleStartGame = () => {
     setGameState("playing");
-    // TODO: Start game logic
+  };
+
+  const handleBackToSettings = () => {
+    setGameState("settings");
+  };
+
+  const handlePlayAgain = () => {
+    setGameState("playing");
   };
 
   return (
@@ -35,26 +42,25 @@ export default function ClickBattle({ backButtonHeightVh }) {
       w="100%"
       display="flex"
       flexDirection="column"
-      justifyContent="center"
-      px={4}
+      px={gameState === "playing" ? 0 : 4}
       overflow="hidden"
-      bg="#2D3748"
+      bg={gameState === "playing" ? "transparent" : "#2D3748"}
       color="white"
     >
-      <AppHeader title="Batalla de Clicks" />
+      {gameState !== "playing" && <AppHeader title="Batalla de Clicks" />}
 
       {/* Main content area */}
-      <Box 
-        textAlign="center" 
-        flex="1" 
-        display="flex" 
-        flexDirection="column" 
-        justifyContent="flex-start"
-        alignItems="center"
-        minH="0"
-        pt={8}
-      >
-        {gameState === "settings" && (
+      {gameState === "settings" && (
+        <Box 
+          textAlign="center" 
+          flex="1" 
+          display="flex" 
+          flexDirection="column" 
+          justifyContent="flex-start"
+          alignItems="center"
+          minH="0"
+          pt={8}
+        >
           <GameSettings
             playerMode={playerMode}
             setPlayerMode={setPlayerMode}
@@ -64,22 +70,31 @@ export default function ClickBattle({ backButtonHeightVh }) {
             setShowCounter={setShowCounter}
             onStartGame={handleStartGame}
           />
-        )}
-        
-        {gameState === "playing" && (
-          <Box>
-            {/* TODO: Game screen */}
-            Jugando...
-          </Box>
-        )}
-        
-        {gameState === "results" && (
-          <Box>
-            {/* TODO: Results screen */}
-            Resultados...
-          </Box>
-        )}
-      </Box>
+        </Box>
+      )}
+
+      {gameState === "playing" && playerMode === 1 && (
+        <SinglePlayerGame
+          duration={duration}
+          showCounter={showCounter}
+          onBackToSettings={handleBackToSettings}
+          onPlayAgain={handlePlayAgain}
+        />
+      )}
+      
+      {gameState === "playing" && playerMode === 2 && (
+        <Box>
+          {/* TODO: Two Player Game screen */}
+          Juego de dos jugadores...
+        </Box>
+      )}
+      
+      {gameState === "results" && (
+        <Box>
+          {/* TODO: Results screen */}
+          Resultados...
+        </Box>
+      )}
     </Box>
   );
 }
