@@ -5,13 +5,13 @@ export const metadata = {
   name: "Batalla de Clicks",
   description: "¿Cómo de rápido puedes hacer clic? Compite contra ti mismo o contra un amigo.",
   categories: ["games"],
-  dateAdded: "2025-08-26",
-  lastUpdated: "2025-08-26",
+  dateAdded: "2025-09-15",
+  lastUpdated: "2025-09-15",
   author: "ajburri",
   isFeatured: true,
   platforms: ["mobile", "tablet"],
   version: "1.0.0",
-  status: "beta",
+  status: "active",
   color: "orange",
   icon: MdAdsClick
 };

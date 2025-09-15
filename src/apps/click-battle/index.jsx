@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { AppHeader } from "@/components/AppHeader";
-import { GameSettings, SinglePlayerGame } from "./components";
+import { GameSettings, SinglePlayerGame, TwoPlayerGame } from "./components";
 
 /**
  * ClickBattle - Main Application Component
@@ -83,10 +83,12 @@ export default function ClickBattle({ backButtonHeightVh }) {
       )}
       
       {gameState === "playing" && playerMode === 2 && (
-        <Box>
-          {/* TODO: Two Player Game screen */}
-          Juego de dos jugadores...
-        </Box>
+        <TwoPlayerGame
+          duration={duration}
+          showCounter={showCounter}
+          onBackToSettings={handleBackToSettings}
+          onPlayAgain={handlePlayAgain}
+        />
       )}
       
       {gameState === "results" && (

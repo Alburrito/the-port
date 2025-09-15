@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Text, Button, VStack, HStack } from "@chakra-ui/react";
+import { useGameLogic } from "../hooks/useGameLogic";
+import { getPerformanceMessage, formatCPS } from "../utils/gameUtils";
 
 /**
  * SinglePlayerGame Component
@@ -13,35 +15,8 @@ export default function SinglePlayerGame({
   onBackToSettings,
   onPlayAgain
 }) {
-  const [gamePhase, setGamePhase] = useState("countdown"); // "countdown", "playing", "finished"
-  const [countdown, setCountdown] = useState(3);
-  const [timeLeft, setTimeLeft] = useState(duration);
+  const { gamePhase, countdown, timeLeft, resetGame } = useGameLogic(duration);
   const [clickCount, setClickCount] = useState(0);
-
-  // Countdown effect (3, 2, 1...)
-  useEffect(() => {
-    if (gamePhase === "countdown" && countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (gamePhase === "countdown" && countdown === 0) {
-      setGamePhase("playing");
-      setTimeLeft(duration);
-    }
-  }, [gamePhase, countdown, duration]);
-
-  // Game timer effect
-  useEffect(() => {
-    if (gamePhase === "playing" && timeLeft > 0) {
-      const timer = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (gamePhase === "playing" && timeLeft === 0) {
-      setGamePhase("finished");
-    }
-  }, [gamePhase, timeLeft]);
 
   const handleClick = () => {
     if (gamePhase === "playing") {
@@ -50,68 +25,15 @@ export default function SinglePlayerGame({
   };
 
   const handlePlayAgain = () => {
-    setGamePhase("countdown");
-    setCountdown(3);
-    setTimeLeft(duration);
+    resetGame();
     setClickCount(0);
     onPlayAgain();
   };
 
   const handleBackToSettings = () => {
-    setGamePhase("countdown");
-    setCountdown(3);
-    setTimeLeft(duration);
+    resetGame();
     setClickCount(0);
     onBackToSettings();
-  };
-
-  // Performance evaluation system
-  const getPerformanceMessage = (clicks, duration) => {
-    const clicksPerSecond = clicks / duration;
-    
-    if (clicksPerSecond >= 15) {
-        return {
-            title: "¡LEYENDA!",
-            message: "Espero que no estés haciendo trampa...",
-            color: "purple.300"
-        };
-    } else if (clicksPerSecond >= 10) {
-      return {
-        title: "¡INCREÍBLE!",
-        message: "Bueno pero tú eres una bestia, ¿no?",
-        color: "green.300"
-      };
-    } else if (clicksPerSecond >= 8) {
-      return {
-        title: "¡EXCELENTE!",
-        message: "Bien clickao",
-        color: "blue.300"
-      };
-    } else if (clicksPerSecond >= 6) {
-      return {
-        title: "¡OYE!",
-        message: "No está nada mal...",
-        color: "orange.300"
-      };
-    } else if (clicksPerSecond >= 4) {
-      return {
-        title: "Bastante lento",
-        message: "Pichí pichá pero bueno...",
-        color: "yellow.300"
-      };
-    } else if (clicksPerSecond >= 2) {
-      return {
-        title: "Lamentable",
-        message: "¿Tienes artritis o qué?",
-        color: "gray.300"
-      };
-    } else {
-      return {
-        title: "¡FATAL!",
-        message: "¿Le estás dando a la pantalla?",
-        color: "red.300"
-      };
-    }
   };
 
   const performanceData = getPerformanceMessage(clickCount, duration);
@@ -170,7 +92,7 @@ export default function SinglePlayerGame({
         </VStack>
       )}
 
-      {/* Finished Phase */}
+      {/* Results Phase */}
       {gamePhase === "finished" && (
         <VStack gap={6}>
           <Text fontSize="3xl" fontWeight="bold" color={performanceData.color}>
@@ -186,7 +108,7 @@ export default function SinglePlayerGame({
               clicks en {duration} segundos
             </Text>
             <Text fontSize="lg" color="blue.300">
-              ({(clickCount / duration).toFixed(1)} clicks/seg)
+              ({formatCPS(clickCount, duration)} clicks/seg)
             </Text>
           </VStack>
           
