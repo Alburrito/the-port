@@ -1,20 +1,22 @@
 import React from "react";
-import { Routes, Route, useParams, Link } from "react-router-dom";
+
 import {
   Box,
   Button,
   SimpleGrid,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
-import { loadAppConfigs } from "@/utils/loadApps.js";
-import { AppNotFound, AppLoadError, PageNotFound, AppUnderMaintenance } from "@/components/ErrorPages.jsx";
+import { Routes, Route, useParams, Link } from "react-router-dom";
+
+import { AppButton } from "@/components/AppButton.jsx";
 import { BackToPortButton, BACK_BUTTON_HEIGHT_VH } from "@/components/BackToPortButton.jsx";
+import { AppNotFound, AppLoadError, PageNotFound, AppUnderMaintenance } from "@/components/ErrorPages.jsx";
 import { LoadingSpinner } from "@/components/LoadingSpinner.jsx";
 import { SearchBar } from "@/components/SearchBar.jsx";
-import { AppButton } from "@/components/AppButton.jsx";
 import { useAppLoader } from "@/hooks/useAppLoader.js";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection.js";
+import { loadAppConfigs } from "@/utils/loadApps.js";
 
 /**
  * Dynamic component loader for individual apps
@@ -98,7 +100,7 @@ export default function App() {
   const [searchValue, setSearchValue] = React.useState("");
   const [currentSort, setCurrentSort] = React.useState({
     sortBy: "dateAdded",
-    sortOrder: "desc"
+    sortOrder: "desc",
   });
   const [currentStatusFilter, setCurrentStatusFilter] = React.useState(["active", "archived"]);
   const [currentPlatformFilter, setCurrentPlatformFilter] = React.useState(["mobile", "tablet", "desktop"]);
@@ -122,28 +124,28 @@ export default function App() {
     if (searchTerm.trim() !== "") {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(app => 
-        app.name.toLowerCase().includes(searchLower)
+        app.name.toLowerCase().includes(searchLower),
       );
     }
 
     // Apply status filter
     if (statusFilter && statusFilter.length > 0) {
       result = result.filter(app => 
-        statusFilter.includes(app.status)
+        statusFilter.includes(app.status),
       );
     }
 
     // Apply platform filter
     if (platformFilter && platformFilter.length > 0) {
       result = result.filter(app => 
-        app.platforms && app.platforms.some(platform => platformFilter.includes(platform))
+        app.platforms && app.platforms.some(platform => platformFilter.includes(platform)),
       );
     }
 
     // Apply category filter
     if (categoryFilter && categoryFilter.length > 0) {
       result = result.filter(app => 
-        app.categories && app.categories.some(category => categoryFilter.includes(category))
+        app.categories && app.categories.some(category => categoryFilter.includes(category)),
       );
     }
 
@@ -187,21 +189,47 @@ export default function App() {
   // Apply initial sort when apps are loaded
   React.useEffect(() => {
     if (apps.length > 0) {
-      applyFiltersAndSort(searchValue, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter);
+      applyFiltersAndSort(
+        searchValue, 
+        currentSort, 
+        currentStatusFilter, 
+        currentPlatformFilter, 
+        currentCategoryFilter,
+      );
     }
-  }, [apps, applyFiltersAndSort, searchValue, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter]);
+  }, [
+    apps, 
+    applyFiltersAndSort, 
+    searchValue, 
+    currentSort, 
+    currentStatusFilter, 
+    currentPlatformFilter, 
+    currentCategoryFilter,
+  ]);
 
-  // Handle search changes
+  // Handles search changes
   const handleSearchChange = React.useCallback((searchTerm) => {
     setSearchValue(searchTerm);
-    applyFiltersAndSort(searchTerm, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter);
-  }, [applyFiltersAndSort, currentSort, currentStatusFilter, currentPlatformFilter, currentCategoryFilter]);
+    applyFiltersAndSort(
+      searchTerm, 
+      currentSort, 
+      currentStatusFilter, 
+      currentPlatformFilter, 
+      currentCategoryFilter,
+    );
+  }, [
+    applyFiltersAndSort, 
+    currentSort, 
+    currentStatusFilter, 
+    currentPlatformFilter, 
+    currentCategoryFilter,
+  ]);
 
   // Handle filter changes
   const handleFiltersChange = React.useCallback((filters) => {
     const newSortConfig = {
       sortBy: filters.sortBy,
-      sortOrder: filters.sortBy === "name" ? "asc" : "desc"
+      sortOrder: filters.sortBy === "name" ? "asc" : "desc",
     };
     setCurrentSort(newSortConfig);
     setCurrentStatusFilter(filters.status || ["active", "archived"]);
@@ -218,7 +246,7 @@ export default function App() {
       newSortConfig, 
       filters.status || ["active", "archived"], 
       platformsToUse, 
-      filters.categories || ["tools", "games", "education", "media", "music", "development"]
+      filters.categories || ["tools", "games", "education", "media", "music", "development"],
     );
   }, [applyFiltersAndSort, searchValue, getDefaultPlatforms]);
 

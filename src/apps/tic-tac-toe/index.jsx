@@ -1,6 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
+
 import { Box } from "@chakra-ui/react";
+
 import { AppHeader } from "@/components/AppHeader";
+
 import { ModeSelectionScreen, GameScreen } from "./components";
 
 /**
@@ -14,21 +17,21 @@ export default function TicTacToe({ backButtonHeightVh }) {
   
   // Settings for each game mode
   const [playerModeSettings, setPlayerModeSettings] = useState({
-    player1Symbol: '⭕',
-    player2Symbol: '❌',
-    player1Name: 'Jugador 1',
-    player2Name: 'Jugador 2'
+    player1Symbol: "⭕",
+    player2Symbol: "❌",
+    player1Name: "Jugador 1",
+    player2Name: "Jugador 2",
   });
   
   const [aiModeSettings, setAiModeSettings] = useState({
-    player1Symbol: '⭕',
-    player2Symbol: '❌',
-    player1Name: 'Jugador 1',
-    player2Name: 'IA'
+    player1Symbol: "⭕",
+    player2Symbol: "❌",
+    player1Name: "Jugador 1",
+    player2Name: "IA",
   });
   
   // Current settings based on selected mode
-  const currentSettings = gameMode === 'ai' ? aiModeSettings : playerModeSettings;
+  const currentSettings = gameMode === "ai" ? aiModeSettings : playerModeSettings;
   const { player1Symbol, player2Symbol, player1Name, player2Name } = currentSettings;
   
   // Player wins state - separate for each game mode
@@ -36,15 +39,15 @@ export default function TicTacToe({ backButtonHeightVh }) {
   const [aiModeWins, setAiModeWins] = useState({ player1: 0, player2: 0 });
   
   // Current game mode wins
-  const player1Wins = gameMode === 'ai' ? aiModeWins.player1 : playerModeWins.player1;
-  const player2Wins = gameMode === 'ai' ? aiModeWins.player2 : playerModeWins.player2;
+  const player1Wins = gameMode === "ai" ? aiModeWins.player1 : playerModeWins.player1;
+  const player2Wins = gameMode === "ai" ? aiModeWins.player2 : playerModeWins.player2;
   
   // Game state for each mode
   const [playerModeState, setPlayerModeState] = useState({
     board: Array(9).fill(null),
     currentPlayer: 1,
     gameWinner: null,
-    gameOver: false
+    gameOver: false,
   });
   
   const [aiModeState, setAiModeState] = useState({
@@ -52,50 +55,67 @@ export default function TicTacToe({ backButtonHeightVh }) {
     currentPlayer: 1,
     gameWinner: null,
     gameOver: false,
-    aiDifficulty: null
+    aiDifficulty: null,
   });
   
   // Current game state based on selected mode
-  const gameState = gameMode === 'ai' ? aiModeState : playerModeState;
+  const gameState = gameMode === "ai" ? aiModeState : playerModeState;
   const { board, currentPlayer, gameWinner, gameOver } = gameState;
-  const aiDifficulty = gameMode === 'ai' ? aiModeState.aiDifficulty : null;
+  const aiDifficulty = gameMode === "ai" ? aiModeState.aiDifficulty : null;
   
   // Temporary settings for the modal (based on current mode)
   const [tempSettings, setTempSettings] = useState({
-    player1Symbol: '⭕',
-    player2Symbol: '❌',
-    player1Name: 'Jugador 1',
-    player2Name: 'Jugador 2'
+    player1Symbol: "⭕",
+    player2Symbol: "❌",
+    player1Name: "Jugador 1",
+    player2Name: "Jugador 2",
   });
 
   // Calculate available height accounting for navigation
   const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
 
+  /**
+   * Handle game mode selection (AI or two-player)
+   * If AI mode is selected, randomly choose a difficulty
+   * 
+   * @param {string} mode - Selected game mode ('ai' or 'player')
+   */
   const handleModeSelect = (mode) => {
     setGameMode(mode);
-    if (mode === 'ai') {
+    if (mode === "ai") {
       // Select random AI difficulty when entering AI mode
       selectRandomAI();
     }
   };
 
+  /**
+   * Show the game settings modal
+   * Initializes temporary settings with the current mode's values
+   */
   const handleShowSettings = () => {
     // Initialize temporary settings with current mode's settings
     setTempSettings({
       player1Symbol: currentSettings.player1Symbol,
       player2Symbol: currentSettings.player2Symbol,
       player1Name: currentSettings.player1Name,
-      player2Name: currentSettings.player2Name
+      player2Name: currentSettings.player2Name,
     });
     setShowSettings(true);
   };
 
+  /**
+   * Closes the settings modal without saving changes
+   */
   const handleCloseSettings = () => {
     setShowSettings(false);
   };
 
+  /**
+   * Saves the settings and applies changes to the game
+   * Updates player symbols and names based on current mode
+   */
   const handleSaveSettings = () => {
-    const isPlayer2NameRequired = gameMode !== 'ai';
+    const isPlayer2NameRequired = gameMode !== "ai";
     if (!tempSettings.player1Name.trim() || (isPlayer2NameRequired && !tempSettings.player2Name.trim())) {
       return;
     }
@@ -104,24 +124,33 @@ export default function TicTacToe({ backButtonHeightVh }) {
     const oldPlayer2Symbol = currentSettings.player2Symbol;
     
     // Update settings for the current mode
-    if (gameMode === 'ai') {
+    if (gameMode === "ai") {
       setAiModeSettings({
         player1Symbol: tempSettings.player1Symbol,
         player2Symbol: tempSettings.player2Symbol,
         player1Name: tempSettings.player1Name.trim(),
-        player2Name: tempSettings.player2Name.trim()
+        player2Name: tempSettings.player2Name.trim(),
       });
     } else {
       setPlayerModeSettings({
         player1Symbol: tempSettings.player1Symbol,
         player2Symbol: tempSettings.player2Symbol,
         player1Name: tempSettings.player1Name.trim(),
-        player2Name: tempSettings.player2Name.trim()
+        player2Name: tempSettings.player2Name.trim(),
       });
     }
     
-    // Update symbols in active game board if they changed
     if (oldPlayer1Symbol !== tempSettings.player1Symbol || oldPlayer2Symbol !== tempSettings.player2Symbol) {
+      /**
+       * Update the board and winner state to reflect new symbols
+       * This ensures continuity in the game after symbol changes
+       * 
+       * @param {Object} prevState - Previous game state
+       * @returns {Object} Updated game state with new symbols
+       * 
+       * @see handleResetGame for full game resets
+       * @see handleResetCurrentMode for resetting everything including wins and settings
+       */
       const updateStateBoard = (prevState) => ({
         ...prevState,
         board: prevState.board.map(cell => {
@@ -129,14 +158,14 @@ export default function TicTacToe({ backButtonHeightVh }) {
           if (cell === oldPlayer2Symbol) return tempSettings.player2Symbol;
           return cell;
         }),
-        gameWinner: prevState.gameWinner && prevState.gameWinner !== 'draw' 
+        gameWinner: prevState.gameWinner && prevState.gameWinner !== "draw" 
           ? (prevState.gameWinner === oldPlayer1Symbol ? tempSettings.player1Symbol 
             : prevState.gameWinner === oldPlayer2Symbol ? tempSettings.player2Symbol 
             : prevState.gameWinner)
-          : prevState.gameWinner
+          : prevState.gameWinner,
       });
       
-      if (gameMode === 'ai') {
+      if (gameMode === "ai") {
         setAiModeState(updateStateBoard);
       } else {
         setPlayerModeState(updateStateBoard);
@@ -146,6 +175,14 @@ export default function TicTacToe({ backButtonHeightVh }) {
     setShowSettings(false);
   };
 
+  /**
+   * Returns to the mode selection screen, resetting game state
+   * Does not reset wins or settings to allow quick mode switching
+   * Resets temporary settings to defaults for next time
+   * (Player 1: "⭕" and "Jugador 1", Player 2: "❌" and "Jugador 2" or "IA")
+   * 
+   * @see handleModeSelect
+   */
   const handleBackToModeSelection = () => {
     setGameMode(null);
   };
@@ -155,7 +192,7 @@ export default function TicTacToe({ backButtonHeightVh }) {
     const lines = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
       [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-      [0, 4, 8], [2, 4, 6] // Diagonals
+      [0, 4, 8], [2, 4, 6], // Diagonals
     ];
 
     for (let i = 0; i < lines.length; i++) {
@@ -179,14 +216,14 @@ export default function TicTacToe({ backButtonHeightVh }) {
     const lines = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8],
       [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
+      [0, 4, 8], [2, 4, 6],
     ];
 
     const aiSymbol = player2Symbol; // AI is always player 2
     const humanSymbol = player1Symbol; // Human is always player 1
 
     // Try to win first
-    for (let line of lines) {
+    for (const line of lines) {
       const [a, b, c] = line;
       const cells = [board[a], board[b], board[c]];
       if (cells.filter(cell => cell === aiSymbol).length === 2 && cells.includes(null)) {
@@ -195,7 +232,7 @@ export default function TicTacToe({ backButtonHeightVh }) {
     }
 
     // Block player wins second
-    for (let line of lines) {
+    for (const line of lines) {
       const [a, b, c] = line;
       const cells = [board[a], board[b], board[c]];
       if (cells.filter(cell => cell === humanSymbol).length === 2 && cells.includes(null)) {
@@ -211,6 +248,14 @@ export default function TicTacToe({ backButtonHeightVh }) {
     const aiSymbol = player2Symbol; // AI is always player 2
     const humanSymbol = player1Symbol; // Human is always player 1
 
+    /**
+     * Minimax algorithm to evaluate the best move
+     * 
+     * @param {Array} board - Current board state
+     * @param {number} depth - Current depth in the game tree
+     * @param {boolean} isMaximizing - True if maximizing player (AI), false if minimizing (human)
+     * @returns {number} Score of the board state
+     */
     const minimax = (board, depth, isMaximizing) => {
       const winner = checkWinner(board);
       if (winner === aiSymbol) return 10 - depth;
@@ -262,13 +307,13 @@ export default function TicTacToe({ backButtonHeightVh }) {
   const makeAIMove = useCallback((board, difficulty) => {
     let move;
     switch (difficulty) {
-      case 'random':
+      case "random":
         move = makeRandomMove(board);
         break;
-      case 'medium':
+      case "medium":
         move = makeMediumMove(board);
         break;
-      case 'hard':
+      case "hard":
         move = makeHardMove(board);
         break;
       default:
@@ -291,12 +336,12 @@ export default function TicTacToe({ backButtonHeightVh }) {
     const newState = {
       board: newBoard,
       currentPlayer: isDrawGame || winner ? currentPlayer : nextPlayer,
-      gameWinner: winner || (isDrawGame ? 'draw' : null),
-      gameOver: !!(winner || isDrawGame)
+      gameWinner: winner || (isDrawGame ? "draw" : null),
+      gameOver: !!(winner || isDrawGame),
     };
 
     // Update the appropriate game mode state
-    if (gameMode === 'ai') {
+    if (gameMode === "ai") {
       setAiModeState(prev => ({ ...prev, ...newState }));
     } else {
       setPlayerModeState(prev => ({ ...prev, ...newState }));
@@ -305,13 +350,13 @@ export default function TicTacToe({ backButtonHeightVh }) {
     // Handle victory counting
     if (winner) {
       if (winner === player1Symbol) {
-        if (gameMode === 'ai') {
+        if (gameMode === "ai") {
           setAiModeWins(prev => ({ ...prev, player1: prev.player1 + 1 }));
         } else {
           setPlayerModeWins(prev => ({ ...prev, player1: prev.player1 + 1 }));
         }
       } else if (winner === player2Symbol) {
-        if (gameMode === 'ai') {
+        if (gameMode === "ai") {
           setAiModeWins(prev => ({ ...prev, player2: prev.player2 + 1 }));
         } else {
           setPlayerModeWins(prev => ({ ...prev, player2: prev.player2 + 1 }));
@@ -321,9 +366,8 @@ export default function TicTacToe({ backButtonHeightVh }) {
   }, [board, gameOver, currentPlayer, player1Symbol, player2Symbol, checkWinner, gameMode]);
 
   const selectRandomAI = useCallback(() => {
-    const difficulties = ['random', 'medium', 'hard'];
+    const difficulties = ["random", "medium", "hard"];
     const selected = difficulties[Math.floor(Math.random() * difficulties.length)];
-    console.log(`🤖 AI Difficulty selected: ${selected}`);
     
     // Update the state and return the selected difficulty
     setAiModeState(prev => ({ ...prev, aiDifficulty: selected }));
@@ -332,7 +376,7 @@ export default function TicTacToe({ backButtonHeightVh }) {
 
   // Reset the current game (keeps wins and settings)
   const handleResetGame = useCallback(() => {
-    if (gameMode === 'ai') {
+    if (gameMode === "ai") {
       const newAiDifficulty = selectRandomAI();
       setAiModeState(prev => ({
         ...prev,
@@ -340,7 +384,7 @@ export default function TicTacToe({ backButtonHeightVh }) {
         currentPlayer: 1, // Player always starts first
         gameWinner: null,
         gameOver: false,
-        aiDifficulty: newAiDifficulty
+        aiDifficulty: newAiDifficulty,
       }));
     } else {
       setPlayerModeState(prev => ({
@@ -348,69 +392,69 @@ export default function TicTacToe({ backButtonHeightVh }) {
         board: Array(9).fill(null),
         currentPlayer: 1,
         gameWinner: null,
-        gameOver: false
+        gameOver: false,
       }));
     }
   }, [gameMode, selectRandomAI]);
 
   // Reset everything for current mode (game state, victories, and settings)
   const handleResetCurrentMode = useCallback(() => {
-    if (gameMode === 'ai') {
+    if (gameMode === "ai") {
       setAiModeState({
         board: Array(9).fill(null),
         currentPlayer: 1,
         gameWinner: null,
         gameOver: false,
-        aiDifficulty: null
+        aiDifficulty: null,
       });
       setAiModeWins({ player1: 0, player2: 0 });
       setAiModeSettings({
-        player1Symbol: '⭕',
-        player2Symbol: '❌',
-        player1Name: 'Jugador 1',
-        player2Name: 'IA'
+        player1Symbol: "⭕",
+        player2Symbol: "❌",
+        player1Name: "Jugador 1",
+        player2Name: "IA",
       });
     } else {
       setPlayerModeState({
         board: Array(9).fill(null),
         currentPlayer: 1,
         gameWinner: null,
-        gameOver: false
+        gameOver: false,
       });
       setPlayerModeWins({ player1: 0, player2: 0 });
       setPlayerModeSettings({
-        player1Symbol: '⭕',
-        player2Symbol: '❌',
-        player1Name: 'Jugador 1',
-        player2Name: 'Jugador 2'
+        player1Symbol: "⭕",
+        player2Symbol: "❌",
+        player1Name: "Jugador 1",
+        player2Name: "Jugador 2",
       });
     }
     
     setTempSettings({
-      player1Symbol: '⭕',
-      player2Symbol: '❌',
-      player1Name: 'Jugador 1',
-      player2Name: 'Jugador 2'
+      player1Symbol: "⭕",
+      player2Symbol: "❌",
+      player1Name: "Jugador 1",
+      player2Name: "Jugador 2",
     });
   }, [gameMode]);
 
   const handleTempSymbolChange = useCallback((player, symbol) => {
     setTempSettings(prev => ({
       ...prev,
-      [player === 'player1' ? 'player1Symbol' : 'player2Symbol']: symbol
+      [player === "player1" ? "player1Symbol" : "player2Symbol"]: symbol,
     }));
   }, []);
 
   const handleTempNameChange = useCallback((player, name) => {
     setTempSettings(prev => ({
       ...prev,
-      [player === 'player1' ? 'player1Name' : 'player2Name']: name
+      [player === "player1" ? "player1Name" : "player2Name"]: name,
     }));
   }, []);
 
   // Block user clicks during AI turns to prevent interference
   const handleUserCellClick = useCallback((index) => {
-    const isAITurn = gameMode === 'ai' && currentPlayer === 2; // AI is always player 2
+    const isAITurn = gameMode === "ai" && currentPlayer === 2; // AI is always player 2
     
     if (isAITurn) return;
     
@@ -419,7 +463,7 @@ export default function TicTacToe({ backButtonHeightVh }) {
 
   // Execute AI moves with proper timing and state management
   useEffect(() => {
-    const isAITurn = gameMode === 'ai' && currentPlayer === 2; // AI is always player 2
+    const isAITurn = gameMode === "ai" && currentPlayer === 2; // AI is always player 2
     
     if (isAITurn && !gameOver && aiDifficulty) {
       const timeoutId = setTimeout(() => {

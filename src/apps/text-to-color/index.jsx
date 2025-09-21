@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+
 import { Box } from "@chakra-ui/react";
-import { TextInput, ColorDisplay } from "./components";
+
 import { AppHeader } from "@/components/AppHeader";
+
+import { TextInput, ColorDisplay } from "./components";
 
 /**
  * TextToColorApp - Main Application Component
@@ -62,7 +65,7 @@ export default function TextToColorApp({ backButtonHeightVh }) {
   function textToColor(text) {
     const asciiValues = Array.from(text).map(char => char.charCodeAt(0));
     const sum = asciiValues.reduce((acc, val) => acc + val, 0);
-    return `#${((sum * 1234567) % 16777215).toString(16).padStart(6, '0')}`;
+    return `#${((sum * 1234567) % 16777215).toString(16).padStart(6, "0")}`;
   }
 
   /**

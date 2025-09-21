@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from "react";
+
 import { Box } from "@chakra-ui/react";
+
 import { RouletteWheel, WinnerDisplay, ColorsList, ControlPanel } from "./components";
 
 /**
@@ -33,7 +35,7 @@ export default function RouletteApp({ backButtonHeightVh }) {
   // Roulette sectors - each sector needs unique color/label for proper identification
   const [colors, setColors] = useState([
     { color: "#42BC01", label: "Sector 1" },
-    { color: "#E47200", label: "Sector 2" }
+    { color: "#E47200", label: "Sector 2" },
   ]);
 
   const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";

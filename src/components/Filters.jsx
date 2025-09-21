@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Dialog,
   Portal,
@@ -8,11 +9,26 @@ import {
   HStack,
   Icon,
   Button,
-  SimpleGrid
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { FiClock, FiEdit, FiType, FiCheck, FiArchive, FiTool, FiSmartphone, FiTablet, FiMonitor } from "react-icons/fi";
+
 import { APP_CATEGORIES } from "@/constants/metadata.js";
 
+/**
+ * Button component for selecting application status
+ *
+ * Provides an interactive button to filter applications by their status
+ * with customizable icons and text, and visual changes based on selection state.
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.value - The value representing this status for the filter
+ * @param {boolean} props.isSelected - Whether this status is currently selected
+ * @param {React.ElementType} props.icon - The icon component to display
+ * @param {string} props.text - Descriptive text for the status
+ * @param {string} [props.colorScheme="teal"] - Color scheme of the button when selected
+ * @param {Function} props.onClick - Function to execute when the button is clicked
+ */
 const StatusButton = ({ value, isSelected, icon, text, colorScheme = "teal", onClick }) => (
   <Button
     onClick={() => onClick(value)}
@@ -43,6 +59,20 @@ const StatusButton = ({ value, isSelected, icon, text, colorScheme = "teal", onC
   </Button>
 );
 
+/**
+ * Button component for selecting application categories
+ *
+ * Provides an interactive button to filter applications by their category,
+ * with customizable icons and text, and visual changes based on selection state.
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.value - The value representing this category for the filter
+ * @param {boolean} props.isSelected - Whether this category is currently selected
+ * @param {React.ElementType} props.icon - The icon component to display
+ * @param {string} props.text - Descriptive text for the category
+ * @param {string} [props.colorScheme="teal"] - Color scheme of the button when selected
+ * @param {Function} props.onClick - Function to execute when the button is clicked
+ */
 const CategoryButton = ({ value, isSelected, icon, text, colorScheme = "teal", onClick }) => (
   <Button
     onClick={() => onClick(value)}
@@ -74,6 +104,20 @@ const CategoryButton = ({ value, isSelected, icon, text, colorScheme = "teal", o
   </Button>
 );
 
+/**
+ * Maintenance Page for Applications
+ *
+ * Provides an interactive button to sort applications by different criteria,
+ * with customizable icons and text, and visual changes based on selection state.
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.value - The value representing this sorting criterion
+ * @param {boolean} props.isSelected - Whether this criterion is currently selected
+ * @param {React.ElementType} props.icon - The icon component to display
+ * @param {string} props.text - Descriptive text for the sorting criterion
+ * @param {string} [props.colorScheme="teal"] - Color scheme of the button when selected
+ * @param {Function} props.onClick - Function to execute when the button is clicked
+ */
 const SortButton = ({ value, isSelected, icon, text, colorScheme = "teal", onClick }) => (
   <Button
     onClick={() => onClick(value)}
@@ -120,7 +164,7 @@ export function Filters({
   tempCategories,
   handleCategoryToggle,
   onApply,
-  onCancel
+  onCancel,
 }) {
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>

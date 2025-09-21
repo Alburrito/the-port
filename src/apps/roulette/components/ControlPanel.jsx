@@ -1,8 +1,10 @@
 import React from "react";
+
 import { Box } from "@chakra-ui/react";
+
+import { ActionButtons } from "./ActionButtons";
 import { AddSectorControls } from "./AddSectorControls";
 import { SpinDurationSlider } from "./SpinDurationSlider";
-import { ActionButtons } from "./ActionButtons";
 
 /**
  * User interface orchestration component
@@ -29,7 +31,7 @@ export function ControlPanel({
   errorMsg,
   winner,
   sliderValue,
-  setSliderValue
+  setSliderValue,
 }) {
   // Business logic: minimum sectors required for meaningful roulette spin
   const canSpin = colorsCount >= 2;

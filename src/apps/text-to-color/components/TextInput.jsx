@@ -1,24 +1,26 @@
 import React from "react";
+
 import { Box, Textarea } from "@chakra-ui/react";
 
 /**
- * TextInput Component
+ * Text input area with auto-resizing for real-time color generation.
  * 
- * Auto-resizing textarea for text input with real-time color generation trigger.
  * Handles text input changes and forwards them to parent component.
  * 
+ *
  * Technical Features:
- * - autoresize property handles dynamic height adjustment
+ * - The autoresize property handles dynamic height adjustment
  * - maxH="30vh" prevents excessive vertical growth
- * - Centered layout with constrained maximum width (500px)
+ * - Centered layout with max width limit (500px)
  * - Dark theme integration with semi-transparent background
- * 
+ *
  * State Management:
- * - Controlled component receiving value and onChange from parent
- * - No local state, forwards all changes immediately
- * 
- * @param {string} inputText - Current text input value
- * @param {Function} onInputChange - Callback for text changes
+ * - Controlled component that receives value and onChange from parent
+ * - No local state, immediately forwards all changes
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.inputText - Current value of the input text
+ * @param {Function} props.onInputChange - Callback for text changes
  */
 export function TextInput({ inputText, onInputChange }) {
   return (

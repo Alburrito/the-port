@@ -1,6 +1,18 @@
 import React from "react";
+
 import { Text, Button } from "@chakra-ui/react";
 
+/**
+ * Game Mode Selection Button
+ *
+ * Large button component with icon and title for selecting game modes.
+ * Utilizes hover effects and animations to enhance interactivity.
+ *
+ * @param {Object} props - Component properties
+ * @param {React.ComponentType} props.icon - Icon component to display
+ * @param {string} props.title - Descriptive text for the game mode
+ * @param {Function} props.onClick - Event handler for selection
+ */
 export function GameModeButton({ icon: Icon, title, onClick }) {
   return (
     <Button

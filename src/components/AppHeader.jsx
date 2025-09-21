@@ -1,21 +1,22 @@
 import React from "react";
+
 import { Box, Text, Separator } from "@chakra-ui/react";
 
 /**
- * AppHeader Component - Reusable Header for Applications
+ * AppHeader - Reusable Header Component for Applications
  * 
  * Centralized header component that can be used across different apps.
- * Provides consistent layout with decorative separators and customizable content.
+ * Provides a consistent layout with decorative separators and customizable content.
  * 
  * Features:
  * - Dynamic title support via props
  * - Optional color scheme customization
  * - Consistent spacing and typography
- * - Responsive design with centered layout
- * 
- * @param {string} title - The application title to display
- * @param {Object} colorScheme - Optional color theme with text property
- * @param {string} colorScheme.text - Text color (defaults to "white")
+ * - Responsive design with centered alignment
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.title - The title of the application to display
+ * @param {Object} [props.colorScheme] - Optional color theme with text property (defaults to { text: "white" })
  */
 export function AppHeader({ title, colorScheme = { text: "white" } }) {
   return (

@@ -2,7 +2,13 @@
 const metadataModules = import.meta.glob("../apps/*/metadata.js");
 const appModules = import.meta.glob("../apps/*/index.jsx");
 
-// Function to load only app metadata (light for startup)
+/**
+ * Loads the configuration of all available apps.
+ * Optimized for the portal's initial load, only fetches metadata.
+ * 
+ * @async
+ * @returns {Promise<Array<Object>>} List of metadata for all available apps
+ */
 export async function loadAppConfigs() {
   const apps = [];
 
@@ -20,7 +26,14 @@ export async function loadAppConfigs() {
   return apps;
 }
 
-// Function to load a specific app with its metadata and component
+/**
+ * Loads a specific app with its metadata and main component.
+ *
+ * @async
+ * @param {string} appId - Unique identifier for the app to load
+ * @returns {Promise<Object>} Object with the app's component and metadata
+ * @throws {Error} If the app does not exist or cannot be loaded
+ */
 export async function loadApp(appId) {
   const path = Object.keys(metadataModules).find(path => path.includes(`/${appId}/`));
   
@@ -34,12 +47,12 @@ export async function loadApp(appId) {
     const metadata = metadataModule.metadata;
     
     // Load app component
-    const appPath = path.replace('/metadata.js', '/index.jsx');
+    const appPath = path.replace("/metadata.js", "/index.jsx");
     const appModule = await appModules[appPath]();
     
     return {
       metadata,
-      component: appModule.default
+      component: appModule.default,
     };
   } catch (error) {
     console.error(`Error loading app ${appId}:`, error);
@@ -47,8 +60,13 @@ export async function loadApp(appId) {
   }
 }
 
-// Function that checks if an app exists
-// It searches for both metadata and main component files
+/**
+ * Checks if an app exists by verifying the presence of its required files.
+ * Searches for both the metadata file and the main component.
+ *
+ * @param {string} appId - Unique identifier for the app to check
+ * @returns {boolean} `true` if the app exists, `false` otherwise
+ */
 export function appExists(appId) {
   const metadataPath = `../apps/${appId}/metadata.js`;
   const componentPath = `../apps/${appId}/index.jsx`;

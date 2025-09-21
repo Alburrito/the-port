@@ -1,22 +1,24 @@
 import React from "react";
+
 import { Box, Text } from "@chakra-ui/react";
 
 /**
- * ColorDisplay Component
- * 
+ * ColorDisplay component with clipboard functionality
+ *
  * Interactive color preview box with clipboard functionality.
- * Displays generated color with hex value and copy feedback.
- * 
- * Technical Implementation:
- * - Click handler triggers clipboard API
+ * Displays the generated color with hexadecimal value and copy feedback.
+ *
+ * Technical Implementation Details:
+ * - The click handler activates the clipboard API
  * - Conditional rendering for copy feedback state
  * - Responsive sizing with breakpoint system
  * - Dynamic background color from boxColor prop
- * - CSS hover transform effects
- * 
- * @param {string} boxColor - Generated hex color value
- * @param {Function} onBoxClick - Click handler for copy functionality
- * @param {boolean} copied - State indicating successful copy operation
+ * - CSS transform effects on hover
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.boxColor - Generated hexadecimal color value
+ * @param {Function} props.onBoxClick - Click handler for copy functionality
+ * @param {boolean} props.copied - State indicating successful copy operation
  */
 export function ColorDisplay({ boxColor, onBoxClick, copied }) {
   return (
@@ -40,7 +42,7 @@ export function ColorDisplay({ boxColor, onBoxClick, copied }) {
           _hover={{ 
             borderColor: "whiteAlpha.500",
             transform: "scale(1.02)",
-            transition: "all 0.2s"
+            transition: "all 0.2s",
           }}
         />
         

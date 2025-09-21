@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+
 import { Box } from "@chakra-ui/react";
-import wordsData from "./words.json";
+
+import { AppHeader } from "@/components/AppHeader";
 import { getRandomDifferentIndex } from "@/utils/randomUtils.js";
+
 import { 
   WordDisplay, 
   DefinitionsCollapsible, 
-  NextWordButton 
+  NextWordButton, 
 } from "./components";
-import { AppHeader } from "@/components/AppHeader";
+import wordsData from "./words.json";
 
 /**
  * WordsGeneratorApp - Main Application Component
@@ -56,21 +59,21 @@ export default function WordsGeneratorApp({ backButtonHeightVh }) {
    * Each scheme includes background and text colors optimized for legibility.
    */
   const colorSchemes = [
-    { bg: "#2D3748", text: "white"},  // Slate gray - professional default
-    { bg: "#1A202C", text: "white"},  // Dark navy - high contrast
-    { bg: "#2B6CB0", text: "white"},  // Blue - calming and focused
-    { bg: "#38A169", text: "white"},  // Green - natural and refreshing
-    { bg: "#805AD5", text: "white"},  // Purple - creative and engaging
-    { bg: "#E53E3E", text: "white"},  // Red - energetic and bold
-    { bg: "#DD6B20", text: "white"},  // Orange - warm and inviting
-    { bg: "#319795", text: "white"},  // Teal - balanced and modern
-    { bg: "#4A5568", text: "white"},  // Gray - neutral and versatile
-    { bg: "#2C5282", text: "white"},  // Deep blue - trustworthy and stable
+    { bg: "#2D3748", text: "white" },
+    { bg: "#1A202C", text: "white" },
+    { bg: "#2B6CB0", text: "white" },
+    { bg: "#38A169", text: "white" },
+    { bg: "#805AD5", text: "white" },
+    { bg: "#E53E3E", text: "white" },
+    { bg: "#DD6B20", text: "white" },
+    { bg: "#319795", text: "white" },
+    { bg: "#4A5568", text: "white" },
+    { bg: "#2C5282", text: "white" },
   ];
 
   // Application state management
   const [currentWord, setCurrentWord] = useState(
-    wordsData[Math.floor(Math.random() * wordsData.length)]
+    wordsData[Math.floor(Math.random() * wordsData.length)],
   );
   const [showDefinitions, setShowDefinitions] = useState(false);
   const [currentColorScheme, setCurrentColorScheme] = useState(colorSchemes[0]);

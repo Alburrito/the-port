@@ -15,37 +15,37 @@ export const getPerformanceMessage = (clicks, duration) => {
     return {
       title: "🚀 ¡INCREÍBLE!",
       message: "Eres una bestia clickeando",
-      color: "green.300"
+      color: "green.300",
     };
   } else if (clicksPerSecond >= 8) {
     return {
       title: "⚡ ¡EXCELENTE!",
       message: "Tienes dedos de Flash",
-      color: "blue.300"
+      color: "blue.300",
     };
   } else if (clicksPerSecond >= 6) {
     return {
       title: "🔥 ¡MUY BIEN!",
       message: "No está nada mal...",
-      color: "orange.300"
+      color: "orange.300",
     };
   } else if (clicksPerSecond >= 4) {
     return {
       title: "😐 Bastante lento",
       message: "Pichí pichá pero bueno...",
-      color: "yellow.300"
+      color: "yellow.300",
     };
   } else if (clicksPerSecond >= 2) {
     return {
       title: "😅 Lamentable",
       message: "¿Tienes artritis o qué?",
-      color: "gray.300"
+      color: "gray.300",
     };
   } else {
     return {
       title: "🐌 ¡FATAL!",
       message: "¿Le estás dando a la pantalla?",
-      color: "red.300"
+      color: "red.300",
     };
   }
 };

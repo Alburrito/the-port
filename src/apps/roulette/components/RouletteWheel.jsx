@@ -1,25 +1,27 @@
 import React from "react";
+
 import { Box, Text } from "@chakra-ui/react";
 
 /**
- * SVG-based roulette wheel with CSS animation
- * 
- * Renders dynamic sector wheel using polar coordinate mathematics.
+ * Roulette wheel component with SVG and CSS animation
+ *
+ * Renders a dynamic sector wheel using polar coordinate math.
  * CSS transform animation provides smooth rotation transitions.
- * Responsive SVG scales across screen sizes with trigonometric sector calculations.
- * 
- * @param {Array} colors - Color objects array with {color, label} properties
- * @param {boolean} isSpinning - Animation state control
- * @param {number} rotation - Accumulated rotation degrees
- * @param {number} animationDuration - Animation duration in seconds
+ * The responsive SVG scales to different screen sizes with trigonometric calculations.
+ *
+ * @param {Object} props - Component properties
+ * @param {Array} props.colors - Array of color objects with {color, label} properties
+ * @param {boolean} props.isSpinning - Control of the animation state
+ * @param {number} props.rotation - Accumulated rotation degrees
+ * @param {number} props.animationDuration - Duration of the animation in seconds
  */
 export function RouletteWheel({ colors, isSpinning, rotation, animationDuration }) {
   // SVG coordinate constants for geometric calculations
   const radius = 180;
   const centerX = 200;
   const centerY = 200;
-  
-  // Empty state placeholder when no sectors configured
+
+  // Placeholder when no sectors are configured
   if (colors.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" flex="0 0 40%" minH="220px">
@@ -73,7 +75,8 @@ export function RouletteWheel({ colors, isSpinning, rotation, animationDuration 
     
     // Single sector: create full circle using two 180° arcs
     if (colors.length === 1) {
-      return `M ${centerX} ${centerY} m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius*2},0 a ${radius},${radius} 0 1,1 -${radius*2},0`;
+      return `M ${centerX} ${centerY} m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius*2},0 
+        a ${radius},${radius} 0 1,1 -${radius*2},0`;
     }
     
     // Multiple sectors: create pie slice with appropriate arc flag
@@ -112,7 +115,7 @@ export function RouletteWheel({ colors, isSpinning, rotation, animationDuration 
             // Conditional CSS animation: only apply transition during spinning
             // Cubic-bezier creates deceleration effect for realistic wheel physics
             transition: isSpinning ? `transform ${animationDuration}s cubic-bezier(0.17, 0.67, 0.83, 0.67)` : undefined,
-            transform: `rotate(${rotation}deg)`
+            transform: `rotate(${rotation}deg)`,
           }}
         >
           {/* SVG wheel with responsive viewBox and drop shadow */}

@@ -1,23 +1,26 @@
 import React from "react";
+
 import { Box, Text, VStack, Collapsible } from "@chakra-ui/react";
 
 /**
- * Expandable definitions container with custom scrollbar
+ * DefinitionsCollapsible - Expandable Definitions Container with Custom Scrollbar
  * 
- * Collapsible component for word definitions with space-efficient design.
+ * Provides an efficient space-saving design for displaying word definitions.
  * Custom scrollbar styling using WebKit CSS properties.
- * unmountOnExit optimization for DOM performance when collapsed.
+ * Performance optimization with unmountOnExit when collapsed.
+
  * 
- * @param {Object} currentWord - Word object with definitions array
- * @param {boolean} showDefinitions - Expansion state control
- * @param {Function} setShowDefinitions - State setter for toggle control
- * @param {Object} colorScheme - Current color theme object with bg/text properties
+ * @param {Object} props - Component properties
+ * @param {Object} props.currentWord - Object containing the current word
+ * @param {boolean} props.showDefinitions - Control for the expansion state
+ * @param {Function} props.setShowDefinitions - State setter for toggle control
+ * @param {Object} props.colorScheme - Object containing the current color theme with bg/text properties
  */
 export function DefinitionsCollapsible({ 
   currentWord, 
   showDefinitions, 
   setShowDefinitions, 
-  colorScheme 
+  colorScheme, 
 }) {
   return (
     <Collapsible.Root unmountOnExit>
@@ -49,19 +52,19 @@ export function DefinitionsCollapsible({
           overflowY="auto"  // Enable vertical scrolling for long definitions
           css={{
             // Custom WebKit scrollbar styling for theme consistency
-            '&::-webkit-scrollbar': {
-              width: '8px',
+            "&::-webkit-scrollbar": {
+              width: "8px",
             },
-            '&::-webkit-scrollbar-track': {
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: '4px',
+            "&::-webkit-scrollbar-track": {
+              background: "rgba(255, 255, 255, 0.1)",
+              borderRadius: "4px",
             },
-            '&::-webkit-scrollbar-thumb': {
-              background: 'rgba(255, 255, 255, 0.3)',
-              borderRadius: '4px',
+            "&::-webkit-scrollbar-thumb": {
+              background: "rgba(255, 255, 255, 0.3)",
+              borderRadius: "4px",
             },
-            '&::-webkit-scrollbar-thumb:hover': {
-              background: 'rgba(255, 255, 255, 0.5)',
+            "&::-webkit-scrollbar-thumb:hover": {
+              background: "rgba(255, 255, 255, 0.5)",
             },
           }}
         >

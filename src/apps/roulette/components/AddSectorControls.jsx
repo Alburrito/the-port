@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Text, Button, Input, HStack } from "@chakra-ui/react";
 
 /**
@@ -26,7 +27,7 @@ export function AddSectorControls({
   onAddColor, 
   isSpinning, 
   winner,
-  errorMsg
+  errorMsg,
 }) {
   return (
     <>

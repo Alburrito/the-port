@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * Device detection hook using User Agent and device capabilities
@@ -8,6 +8,14 @@ export function useDeviceDetection() {
   const [deviceType, setDeviceType] = useState(null);
 
   useEffect(() => {
+    /**
+     * Detect device type based on user agent and capabilities
+     * Returns "mobile", "tablet", or "desktop"
+     * Prioritizes mobile detection first, then tablet, else desktop
+     * Uses multiple checks for robustness across various devices
+     * 
+     * @returns {string} Detected device type
+     */
     const detectDevice = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const platform = navigator.platform.toLowerCase();
@@ -15,40 +23,44 @@ export function useDeviceDetection() {
       // Check for mobile devices first (most specific)
       const isMobile = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent) ||
                       /mobile/i.test(userAgent) ||
-                      ('ontouchstart' in window && screen.width < 768);
+                      ("ontouchstart" in window && screen.width < 768);
 
       // Check for tablets
       const isTablet = /ipad|android(?!.*mobile)|kindle|silk|playbook|tablet/i.test(userAgent) ||
-                      (platform.includes('mac') && 'ontouchstart' in window) || // iPad on iOS 13+
+                      (platform.includes("mac") && "ontouchstart" in window) || // iPad on iOS 13+
                       (/android/i.test(userAgent) && !/mobile/i.test(userAgent)) ||
-                      ('ontouchstart' in window && screen.width >= 768 && screen.width <= 1024);
+                      ("ontouchstart" in window && screen.width >= 768 && screen.width <= 1024);
 
       // Check device type based on detection results
       if (isMobile && !isTablet) {
-        return 'mobile';
+        return "mobile";
       } else if (isTablet) {
-        return 'tablet';
+        return "tablet";
       } else {
-        return 'desktop';
+        return "desktop";
       }
     };
 
     // Initial detection
     setDeviceType(detectDevice());
 
-    // Listen for orientation changes (mobile/tablet specific)
+    /**
+     * Handle orientation changes and window resize events to re-detect device type
+     * Adds a small delay to allow orientation change to complete
+     * Cleans up event listeners on unmount
+     */
     const handleOrientationChange = () => {
       setTimeout(() => {
         setDeviceType(detectDevice());
       }, 100); // Small delay for orientation change to complete
     };
 
-    window.addEventListener('orientationchange', handleOrientationChange);
-    window.addEventListener('resize', handleOrientationChange);
+    window.addEventListener("orientationchange", handleOrientationChange);
+    window.addEventListener("resize", handleOrientationChange);
 
     return () => {
-      window.removeEventListener('orientationchange', handleOrientationChange);
-      window.removeEventListener('resize', handleOrientationChange);
+      window.removeEventListener("orientationchange", handleOrientationChange);
+      window.removeEventListener("resize", handleOrientationChange);
     };
   }, []);
 

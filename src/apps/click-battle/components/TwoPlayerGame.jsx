@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+
 import { Box, Text, Button, VStack, HStack } from "@chakra-ui/react";
+
 import { useGameLogic } from "../hooks/useGameLogic";
 import { formatCPS } from "../utils/gameUtils";
 
@@ -14,12 +16,18 @@ export default function TwoPlayerGame({
   duration,
   showCounter,
   onBackToSettings,
-  onPlayAgain
+  onPlayAgain,
 }) {
   const { gamePhase, countdown, timeLeft, resetGame } = useGameLogic(duration);
   const [player1Clicks, setPlayer1Clicks] = useState(0);
   const [player2Clicks, setPlayer2Clicks] = useState(0);
 
+  /**
+   * Handle Player 1 clicks (blue side)
+   * Increments Player 1's click counter only during the active playing phase
+   *
+   * @param {React.MouseEvent} e - Click event
+   */
   const handlePlayer1Click = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -28,6 +36,12 @@ export default function TwoPlayerGame({
     }
   };
 
+  /**
+   * Handles Player 2 clicks (red side)
+   * Increments Player 2's click counter only during the active playing phase
+   *
+   * @param {React.MouseEvent} e - Click event
+   */
   const handlePlayer2Click = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -36,6 +50,10 @@ export default function TwoPlayerGame({
     }
   };
 
+  /**
+   * Restarts the game for a new round
+   * Resets the timer and click counters for both players, and notifies the parent component
+   */
   const handlePlayAgain = () => {
     resetGame();
     setPlayer1Clicks(0);
@@ -43,6 +61,10 @@ export default function TwoPlayerGame({
     onPlayAgain();
   };
 
+  /**
+   * Handles the back to settings action
+   * Resets the game state, click counters for both players and notifies the parent component
+   */
   const handleBackToSettings = () => {
     resetGame();
     setPlayer1Clicks(0);
@@ -51,6 +73,13 @@ export default function TwoPlayerGame({
   };
 
   // Determine winner and winner color
+  /**
+   * Determines the winner and their associated data
+   * Compares the clicks of both players and returns information about the winner,
+   * including name, color, emoji and statistics
+   *
+   * @returns {Object} Winner data with name, color and statistics
+   */
   const getWinnerData = () => {
     if (player1Clicks > player2Clicks) {
       return { 
@@ -58,7 +87,7 @@ export default function TwoPlayerGame({
         color: "blue.600",
         emoji: "🔵",
         winnerClicks: player1Clicks,
-        loserClicks: player2Clicks
+        loserClicks: player2Clicks,
       };
     } else if (player2Clicks > player1Clicks) {
       return { 
@@ -66,7 +95,7 @@ export default function TwoPlayerGame({
         color: "red.600",
         emoji: "🔴",
         winnerClicks: player2Clicks,
-        loserClicks: player1Clicks
+        loserClicks: player1Clicks,
       };
     } else {
       return { 
@@ -74,7 +103,7 @@ export default function TwoPlayerGame({
         color: "purple.600",
         emoji: "🤝",
         winnerClicks: player1Clicks,
-        loserClicks: player2Clicks
+        loserClicks: player2Clicks,
       };
     }
   };
@@ -169,7 +198,7 @@ export default function TwoPlayerGame({
             onPointerDown={handlePlayer1Click}
             cursor="pointer"
             userSelect="none"
-            style={{ touchAction: 'manipulation' }}
+            style={{ touchAction: "manipulation" }}
             transform="rotate(180deg)"
           >
             <VStack gap={4}>
@@ -200,7 +229,7 @@ export default function TwoPlayerGame({
             onPointerDown={handlePlayer2Click}
             cursor="pointer"
             userSelect="none"
-            style={{ touchAction: 'manipulation' }}
+            style={{ touchAction: "manipulation" }}
           >
             <VStack gap={4}>
               <Text fontSize="xl" fontWeight="bold">

@@ -1,6 +1,21 @@
 import React from "react";
+
 import { VStack, HStack, Text, Box } from "@chakra-ui/react";
 
+/**
+ * Player Information Component
+ *
+ * Displays detailed information about both players, including
+ * names, symbols, and win counters.
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.player1Symbol - SSymbol for player 1
+ * @param {string} props.player2Symbol - Symbol for player 2
+ * @param {string} props.player1Name - Name of player 1
+ * @param {string} props.player2Name - Name of player 2
+ * @param {number} props.player1Wins - Number of wins for player 1
+ * @param {number} props.player2Wins - Number of wins for player 2
+ */
 export function PlayerInfo({ player1Symbol, player2Symbol, player1Name, player2Name, player1Wins, player2Wins }) {
   // Truncate names to prevent layout breaking on long inputs
   const truncatedName1 = player1Name.length > 10 ? player1Name.substring(0, 10) + "..." : player1Name;

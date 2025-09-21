@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+
 import { Box, Text, Button, VStack, HStack } from "@chakra-ui/react";
+
 import { useGameLogic } from "../hooks/useGameLogic";
 import { getPerformanceMessage, formatCPS } from "../utils/gameUtils";
 
@@ -13,23 +15,35 @@ export default function SinglePlayerGame({
   duration,
   showCounter,
   onBackToSettings,
-  onPlayAgain
+  onPlayAgain,
 }) {
   const { gamePhase, countdown, timeLeft, resetGame } = useGameLogic(duration);
   const [clickCount, setClickCount] = useState(0);
 
+  /**
+   * Handle user clicks during the game
+   * Increments the click counter only when the game is in active playing phase
+   */
   const handleClick = () => {
     if (gamePhase === "playing") {
       setClickCount(clickCount + 1);
     }
   };
 
+  /**
+   * Restarts the game for a new round
+   * Resets the timer and click counter, and notifies the parent component
+   */
   const handlePlayAgain = () => {
     resetGame();
     setClickCount(0);
     onPlayAgain();
   };
 
+  /**
+   * Handles the back to settings action
+   * Resets the game state and notifies the parent component
+   */
   const handleBackToSettings = () => {
     resetGame();
     setClickCount(0);

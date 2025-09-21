@@ -1,5 +1,7 @@
 import React from "react";
+
 import { Box, Text, SimpleGrid } from "@chakra-ui/react";
+
 import { ColorSectorItem } from "./ColorSectorItem";
 
 /**

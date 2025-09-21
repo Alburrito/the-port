@@ -24,7 +24,7 @@ export const APP_STATUS = [
   "archived", // Indicates the app is no longer actively maintained
   "beta", // Indicates the app is in beta testing
   "experimental", // Indicates the app is experimental and may change
-  "deprecated" // Indicates the app is no longer recommended for use
+  "deprecated", // Indicates the app is no longer recommended for use
 ];
 
 // Main color options (Chakra UI palette)
@@ -37,5 +37,5 @@ export const APP_COLORS = [
   "purple",
   "pink",
   "yellow",
-  "gray"
+  "gray",
 ];

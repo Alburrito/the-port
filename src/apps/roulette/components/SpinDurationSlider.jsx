@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Box, Text, Slider } from "@chakra-ui/react";
 
 /**
@@ -18,10 +19,10 @@ export function SpinDurationSlider({
   sliderValue, 
   setSliderValue, 
   isSpinning, 
-  winner 
+  winner, 
 }) {
   return (
-    <Box mb={4} justifyContent={"center"} display="flex">
+    <Box mb={4} justifyContent="center" display="flex">
       <Slider.Root 
         width="100%" 
         disabled={isSpinning || winner} // Prevent changes during critical states
@@ -34,7 +35,7 @@ export function SpinDurationSlider({
           {/* Dynamic label with proper grammar and special case handling */}
           Tiempo de giro: {
             sliderValue === 11 ? 
-              'Aleatorio'  // Special case: random duration
+              "Aleatorio"  // Special case: random duration
               : sliderValue === 1 ?
                 `${sliderValue} segundo`  // Singular form
                 : `${sliderValue} segundos` // Plural form

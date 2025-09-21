@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+
 import { Box, Text, Button, Input, SimpleGrid, HStack, Dialog, Portal } from "@chakra-ui/react";
+
 import { EditIcon, RemoveIcon } from "./icons";
 
 /**

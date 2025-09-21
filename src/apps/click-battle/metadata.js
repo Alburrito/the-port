@@ -13,5 +13,5 @@ export const metadata = {
   version: "1.0.0",
   status: "active",
   color: "orange",
-  icon: MdAdsClick
+  icon: MdAdsClick,
 };

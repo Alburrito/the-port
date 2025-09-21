@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+
 import { Box } from "@chakra-ui/react";
+
 import { AppHeader } from "@/components/AppHeader";
+
 import { GameSettings, SinglePlayerGame, TwoPlayerGame } from "./components";
 
 /**
@@ -23,14 +26,23 @@ export default function ClickBattle({ backButtonHeightVh }) {
   // Calculate available height accounting for navigation
   const availableHeight = backButtonHeightVh ? `${100 - backButtonHeightVh}vh` : "100vh";
 
+  /**
+   * Initializes the game
+   */
   const handleStartGame = () => {
     setGameState("playing");
   };
 
+  /**
+   * Returns to the configuration screen
+   */
   const handleBackToSettings = () => {
     setGameState("settings");
   };
 
+  /**
+   * Resets the game but keeps current config
+   */
   const handlePlayAgain = () => {
     setGameState("playing");
   };

@@ -1,12 +1,14 @@
 import React from "react";
+
 import {
   Box,
   Input,
   Group,
   CloseButton,
-  IconButton
+  IconButton,
 } from "@chakra-ui/react";
 import { FiFilter } from "react-icons/fi";
+
 import { Filters } from "./Filters.jsx";
 
 /**
@@ -21,7 +23,7 @@ export function SearchBar({
   currentPlatforms = ["mobile", "tablet", "desktop"],
   currentStatus = ["active", "archived"],
   currentCategories = ["tools", "games", "education", "media", "music", "development"],
-  currentSort = "dateAdded"
+  currentSort = "dateAdded",
 }) {
   // Applied filters state - persists until user changes them
   const [appliedSortBy, setAppliedSortBy] = React.useState(currentSort);
@@ -45,11 +47,21 @@ export function SearchBar({
   
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
 
+  /**
+   * Handle clearing the search input
+   * Calls the onSearchChange callback with an empty string to clear the search
+   */
   const handleClear = () => {
     onSearchChange?.("");
   };
 
   // Multiselect handlers with minimum-one constraint to prevent empty selections
+  /**
+   * Handle toggling a status in the temporary filters
+   * Ensures at least one status is always selected, using "active" as the default
+   *
+   * @param {string} statusValue - The status value to toggle
+   */
   const handleStatusToggle = (statusValue) => {
     setTempStatus(current => {
       const newStatus = current.includes(statusValue)
@@ -59,6 +71,12 @@ export function SearchBar({
     });
   };
 
+  /**
+   * Handle toggling a platform in the temporary filters
+   * Ensures at least one platform is always selected, using "mobile" as the default
+   *
+   * @param {string} platformValue - The platform value to toggle
+   */
   const handlePlatformToggle = (platformValue) => {
     setTempPlatforms(current => {
       const newPlatforms = current.includes(platformValue)
@@ -69,6 +87,12 @@ export function SearchBar({
     });
   };
 
+  /**
+   * Handle toggling a category in the temporary filters
+   * Ensures at least one category is always selected, using "tools" as the default
+   *
+   * @param {string} categoryValue - The category value to toggle
+   */
   const handleCategoryToggle = (categoryValue) => {
     setTempCategories(current => {
       const newCategories = current.includes(categoryValue)
@@ -78,7 +102,13 @@ export function SearchBar({
     });
   };
 
-  // Sync temporary state with applied state when modal opens
+  /**
+   * Handle opening/closing the filters dialog
+   * When opened, sync the temporary state with the currently applied state
+   *
+   * @param {Object} details - Opening/closing event details
+   * @param {boolean} details.open - Whether the dialog is open or closed
+   */
   const handleFiltersOpenChange = (details) => {
     if (details.open) {
       setTempSortBy(appliedSortBy);
@@ -89,7 +119,10 @@ export function SearchBar({
     setIsFiltersOpen(details.open);
   };
 
-  // Revert temporary state on cancel
+  /**
+   * Handle canceling the filters dialog
+   * Reverts temporary changes to previously applied values and closes the dialog
+   */
   const handleFiltersCancel = () => {
     setTempSortBy(appliedSortBy);
     setTempStatus([...appliedStatus]);
@@ -98,14 +131,17 @@ export function SearchBar({
     setIsFiltersOpen(false);
   };
 
-  // Apply temporary state and notify parent component
+  /**
+   * Applies temporary filters as current filters
+   * Updates local state and notifies parent component via onFiltersChange function
+   */
   const handleApplyFilters = () => {
     const filters = {
       sortBy: tempSortBy,
       sortOrder: tempSortBy === "name" ? "asc" : "desc",
       status: [...tempStatus],
       platforms: [...tempPlatforms],
-      categories: [...tempCategories]
+      categories: [...tempCategories],
     };
     setAppliedSortBy(tempSortBy);
     setAppliedStatus([...tempStatus]);
@@ -127,7 +163,7 @@ export function SearchBar({
           pr="20"
           _focus={{
             borderColor: "teal.500",
-            boxShadow: "0 0 0 1px teal.500"
+            boxShadow: "0 0 0 1px teal.500",
           }}
         />
         
@@ -149,7 +185,7 @@ export function SearchBar({
           onClick={() => setIsFiltersOpen(true)}
           _hover={{
             bg: "gray.100",
-            borderColor: "gray.400"
+            borderColor: "gray.400",
           }}
         >
           <FiFilter />

@@ -1,8 +1,19 @@
 import React from "react";
+
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { MdSupervisorAccount, MdComputer } from "react-icons/md";
+
 import { GameModeButton } from "./GameModeButton";
 
+/**
+ * Mode Selection Screen
+ *
+ * Displays the different game modes available through interactive buttons.
+ * Allows the user to choose between playing against the AI or another player.
+ *
+ * @param {Object} props - Component properties
+ * @param {Function} props.onModeSelect - Callback for selecting the game mode
+ */
 export function ModeSelectionScreen({ onModeSelect }) {
   return (
     <Box 
@@ -23,13 +34,13 @@ export function ModeSelectionScreen({ onModeSelect }) {
           <GameModeButton
             icon={MdComputer}
             title="Un Jugador"
-            onClick={() => onModeSelect('ai')}
+            onClick={() => onModeSelect("ai")}
           />
 
           <GameModeButton
             icon={MdSupervisorAccount}
             title="Dos Jugadores"
-            onClick={() => onModeSelect('player')}
+            onClick={() => onModeSelect("player")}
           />            
         </HStack>
       </VStack>

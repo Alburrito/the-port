@@ -34,7 +34,9 @@ export const useGameLogic = (duration) => {
     }
   }, [gamePhase, timeLeft]);
 
-  // Reset game function
+  /**
+   * Resets the game state to the initial countdown phase.
+   */
   const resetGame = () => {
     setGamePhase("countdown");
     setCountdown(3);
@@ -46,6 +48,6 @@ export const useGameLogic = (duration) => {
     countdown,
     timeLeft,
     resetGame,
-    setGamePhase
+    setGamePhase,
   };
 };

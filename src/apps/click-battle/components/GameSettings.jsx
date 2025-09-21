@@ -1,4 +1,5 @@
 import React from "react";
+
 import { VStack, HStack, Button, Text, Box } from "@chakra-ui/react";
 
 /**
@@ -14,7 +15,7 @@ export default function GameSettings({
   setDuration,
   showCounter,
   setShowCounter,
-  onStartGame
+  onStartGame,
 }) {
   return (
     <VStack gap={0} width="100%" maxW="400px">
@@ -111,7 +112,7 @@ export default function GameSettings({
         boxShadow="0 8px 25px rgba(220, 38, 38, 0.4)"
         _hover={{
           transform: "translateY(-2px)",
-          boxShadow: "0 12px 30px rgba(220, 38, 38, 0.5)"
+          boxShadow: "0 12px 30px rgba(220, 38, 38, 0.5)",
         }}
         transition="all 0.3s ease"
       >

@@ -1,27 +1,30 @@
 import React from "react";
+
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 /**
- * AppButton Component
+ * AppButton - Application Card Button with Featured Indicator
  * 
- * Button component for app cards with featured app indicator.
- * Shows a featured emoji on the left when isFeatured is true.
+ * Button for application cards with featured indicator.
+ * Displays a featured emoji on the left when isFeatured is true.
  * 
- * @param {string} id - App identifier for routing
- * @param {string} name - App display name
- * @param {string} color - Chakra UI color palette
- * @param {Component} icon - React icon component
- * @param {boolean} isFeatured - Whether to show featured indicator
- * @param {string} featuredEmoji - Emoji to show for featured apps
+ * @param {Object} props - Component properties
+ * @param {string} props.id - Application identifier for routing
+ * @param {string} props.color - Chakra UI color palette
+ * @param {boolean} props.isFeatured - Whether to show the featured indicator
+ * @param {string} props.featuredEmoji - Emoji to display in featured apps
+ * @param {Component} props.icon - Icon component
+ * @param {string} props.name - Name to display on the button
  */
 export function AppButton({ 
   id, 
-  name, 
   color, 
-  icon: IconComponent, 
   isFeatured = false,
-  featuredEmoji = "🌟" 
+  featuredEmoji = "🌟", 
+  // eslint-disable-next-line no-unused-vars
+  icon: IconComponent,
+  name,
 }) {
   return (
     <Button
@@ -36,11 +39,11 @@ export function AppButton({
       {isFeatured && (
         <span 
           style={{
-            position: 'absolute',
-            left: '8px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            fontSize: '16px'
+            position: "absolute",
+            left: "8px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            fontSize: "16px",
           }}
         >
           {featuredEmoji}

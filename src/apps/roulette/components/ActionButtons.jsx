@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Button } from "@chakra-ui/react";
 
 /**
@@ -22,7 +23,7 @@ export function ActionButtons({
   canSpin, 
   onSpinRoulette, 
   onCancelSpin, 
-  onReset 
+  onReset, 
 }) {
   return (
     <>

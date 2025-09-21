@@ -1,6 +1,18 @@
 import React from "react";
+
 import { Grid, Box } from "@chakra-ui/react";
 
+/**
+ * Tic Tac Toe Game Board
+ *
+ * Renders an interactive 3x3 grid for the game.
+ * Handles the display of the game state and user interactions.
+ *
+ * @param {Object} props - Component properties
+ * @param {Array<string>} props.board - Current board state (array of 9 elements)
+ * @param {Function} props.onCellClick - Callback for when a cell is clicked
+ * @param {boolean} props.gameOver - Indicates if the game is over
+ */
 export function GameBoard({ board, onCellClick, gameOver }) {
   return (
     <Grid

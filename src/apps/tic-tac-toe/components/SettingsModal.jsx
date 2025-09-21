@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   Dialog,
   VStack,
@@ -7,14 +8,26 @@ import {
   Button,
   Input,
   Box,
-  SimpleGrid
+  SimpleGrid,
 } from "@chakra-ui/react";
 
 const AVAILABLE_SYMBOLS = [
-  '⭕', '❌', '🔵', '❎', '🟡', '🔴', '🟢', '🟠', '🟣', '🟤', '⚫', '⚪', '🔥', '💎', '🌟',
-  '⭐', '🎯', '🚀', '⚽', '🏀', '🎪', '🎨', '🎮', '🍕', '🍎', '🦄', '🐱', '🦦', '⚡', '🌙'
+  "⭕", "❌", "🔵", "❎", "🟡", "🔴", "🟢", "🟠", "🟣", "🟤", "⚫", "⚪", "🔥", "💎", "🌟",
+  "⭐", "🎯", "🚀", "⚽", "🏀", "🎪", "🎨", "🎮", "🍕", "🍎", "🦄", "🐱", "🦦", "⚡", "🌙",
 ];
 
+/**
+ * Dropdown de selección de símbolo
+ * 
+ * Allows the user to choose a symbol from a predefined collection.
+ *
+ * Prevents duplicates between players and provides an intuitive visual interface.
+ *
+ * @param {Object} props - Component properties
+ * @param {string} props.currentSymbol - Currently selected symbol
+ * @param {Function} props.onSymbolChange - Callback for when a new symbol is selected
+ * @param {string} props.otherSymbol - Symbol of the other player (to avoid duplicates)
+ */
 const SymbolDropdown = ({ currentSymbol, onSymbolChange, otherSymbol }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -74,6 +87,27 @@ const SymbolDropdown = ({ currentSymbol, onSymbolChange, otherSymbol }) => {
   );
 };
 
+/**
+ * Setting Modal
+ * 
+ * Modal dialog for configuring player settings before starting the game.
+ * Allows customization of player names and symbols.
+ * Validates user input and provides visual feedback.
+ *
+ * @param {Object} props - Component properties
+ * @param {boolean} props.isOpen - Controls whether the modal is visible
+ * @param {Function} props.onClose - Callback for closing the modal
+ * @param {Function} props.onSave - Callback for saving the settings
+ * @param {string} props.gameMode - Current game mode
+ * @param {string} props.player1Symbol - Symbol for player 1
+ * @param {string} props.player2Symbol - Symbol for player 2
+ * @param {Function} props.onPlayer1SymbolChange - Callback for changing player 1 symbol
+ * @param {Function} props.onPlayer2SymbolChange - Callback for changing player 2 symbol
+ * @param {string} props.player1Name - Name of player 1
+ * @param {string} props.player2Name - Name of player 2
+ * @param {Function} props.onPlayer1NameChange - Callback for changing player 1 name
+ * @param {Function} props.onPlayer2NameChange - Callback for changing player 2 name
+ */
 export function SettingsModal({
   isOpen,
   onClose,
@@ -86,10 +120,10 @@ export function SettingsModal({
   player1Name,
   player2Name,
   onPlayer1NameChange,
-  onPlayer2NameChange
+  onPlayer2NameChange,
 }) {
   const isPlayer1NameEmpty = !player1Name.trim();
-  const isPlayer2NameEmpty = gameMode === 'ai' ? false : !player2Name.trim();
+  const isPlayer2NameEmpty = gameMode === "ai" ? false : !player2Name.trim();
   const canSave = !isPlayer1NameEmpty && !isPlayer2NameEmpty;
 
   return (
@@ -107,7 +141,7 @@ export function SettingsModal({
             <VStack gap={6} align="stretch">
               <HStack justify="space-between" align="center">
                 <Text fontSize="md" fontWeight="medium" minW="80px">
-                  {gameMode === 'ai' ? 'Jugador:' : 'Jugador 1:'}
+                  {gameMode === "ai" ? "Jugador:" : "Jugador 1:"}
                 </Text>
                 <Input
                   value={player1Name}
@@ -128,7 +162,7 @@ export function SettingsModal({
                 />
               </HStack>
 
-              {gameMode !== 'ai' && (
+              {gameMode !== "ai" && (
                 <HStack justify="space-between" align="center">
                   <Text fontSize="md" fontWeight="medium" minW="80px">
                     Jugador 2:
@@ -153,7 +187,7 @@ export function SettingsModal({
                 </HStack>
               )}
 
-              {gameMode === 'ai' && (
+              {gameMode === "ai" && (
                 <HStack justify="space-between" align="center">
                   <Text fontSize="md" fontWeight="medium" minW="80px">
                     IA:
